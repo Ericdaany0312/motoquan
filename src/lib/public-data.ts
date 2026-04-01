@@ -61,16 +61,35 @@ function normalizeArticle(a: any): PublicArticle {
   };
 }
 
-// Fetch all published articles
-export async function getPublishedArticles(category?: string, limit = 20): Promise<PublicArticle[]> {
-  let url = `${BASE_URL}/rest/v1/articles?select=*&status=eq.published&order=published_at.desc&limit=${limit}`;
+// Fetch published articles with pagination (default 30 per page)
+export async function getPublishedArticles(
+  category?: string,
+  limit = 30,
+  page = 1
+): Promise<{ articles: PublicArticle[]; total: number; hasMore: boolean }> {
+  const offset = (page - 1) * limit;
+  let url = `${BASE_URL}/rest/v1/articles?select=*&status=eq.published&order=published_at.desc&limit=${limit}&offset=${offset}`;
   if (category && category !== '全部') {
     url += `&category=eq.${encodeURIComponent(category)}`;
   }
   const res = await fetch(url, { headers });
-  if (!res.ok) return [];
+  if (!res.ok) return { articles: [], total: 0, hasMore: false };
   const data = await res.json();
-  return data.map(normalizeArticle);
+
+  // Also fetch total count for the category
+  let countUrl = `${BASE_URL}/rest/v1/articles?select=id&status=eq.published`;
+  if (category && category !== '全部') {
+    countUrl += `&category=eq.${encodeURIComponent(category)}`;
+  }
+  const countRes = await fetch(countUrl, { headers });
+  const countData = await countRes.json();
+  const total = Array.isArray(countData) ? countData.length : 0;
+
+  return {
+    articles: data.map(normalizeArticle),
+    total,
+    hasMore: total > page * limit,
+  };
 }
 
 // Fetch featured article

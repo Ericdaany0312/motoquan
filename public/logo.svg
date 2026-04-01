@@ -1,9 +1,31 @@
-<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="128" height="128" rx="28" fill="#0D2236"/>
-  <path d="M40 78C32.268 78 26 84.268 26 92C26 99.732 32.268 106 40 106C47.732 106 54 99.732 54 92C54 84.268 47.732 78 40 78Z" stroke="#2CC6FF" stroke-width="6"/>
-  <path d="M89 78C81.268 78 75 84.268 75 92C75 99.732 81.268 106 89 106C96.732 106 103 99.732 103 92C103 84.268 96.732 78 89 78Z" stroke="#2CC6FF" stroke-width="6"/>
-  <path d="M47 92H70L83 62H98" stroke="#E6F1FF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M61 50H77L71 62H55L47 44H36" stroke="#E6F1FF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M83 62L69 62" stroke="#0A84FF" stroke-width="6" stroke-linecap="round"/>
-  <path d="M64 24L67.8409 31.1591L76 29L73.8409 37.1591L81 41L73.8409 44.8409L76 53L67.8409 50.8409L64 58L60.1591 50.8409L52 53L54.1591 44.8409L47 41L54.1591 37.1591L52 29L60.1591 31.1591L64 24Z" fill="#0A84FF"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" width="240" height="60">
+  <defs>
+    <linearGradient id="markGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B35"/>
+      <stop offset="100%" stop-color="#E8551A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Logo Mark: stylized wheel + rider circle -->
+  <g transform="translate(6, 6)">
+    <!-- Outer ring -->
+    <circle cx="24" cy="24" r="22" fill="none" stroke="url(#markGrad)" stroke-width="3.5"/>
+    <!-- Inner spoke ring -->
+    <circle cx="24" cy="24" r="13" fill="none" stroke="url(#markGrad)" stroke-width="2.5"/>
+    <!-- Center dot -->
+    <circle cx="24" cy="24" r="4" fill="#FF6B35"/>
+    <!-- Spokes (6, like a wheel) -->
+    <line x1="24" y1="11" x2="24" y2="2" stroke="#FF6B35" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="24" y1="37" x2="24" y2="46" stroke="#FF6B35" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="11" y1="24" x2="2" y2="24" stroke="#FF6B35" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="37" y1="24" x2="46" y2="24" stroke="#FF6B35" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="15.7" y1="15.7" x2="9.3" y2="9.3" stroke="#FF6B35" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="32.3" y1="32.3" x2="38.7" y2="38.7" stroke="#FF6B35" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="32.3" y1="15.7" x2="38.7" y2="9.3" stroke="#FF6B35" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="15.7" y1="32.3" x2="9.3" y2="38.7" stroke="#FF6B35" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Text: 摩托圈 -->
+  <text x="70" y="30" font-family="'PingFang SC', 'SF Pro Display', 'Helvetica Neue', sans-serif" font-size="26" font-weight="700" fill="#1A1A2E" letter-spacing="1">摩托圈</text>
+  <text x="70" y="47" font-family="'PingFang SC', 'SF Pro Display', 'Helvetica Neue', sans-serif" font-size="11" font-weight="500" fill="#9CA3AF" letter-spacing="4">MOTORCYCLE CIRCLE</text>
 </svg>

@@ -9,25 +9,25 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        canvas: "#F5F6FA",
-        surface: "#FFFFFF",
-        line: "#E6EAF2",
-        primary: "#0A84FF",
-        primarySoft: "#E7F2FF",
-        secondary: "#FF6B35",
-        secondarySoft: "#FFF0EA",
-        heading: "#1A1A2E",
-        body: "#6B7280"
+        canvas:   "#F5F6FA",
+        surface:  "#FFFFFF",
+        line:     "#E4E6EF",
+        heading:  "#1A1A2E",
+        body:     "#6B7280",
+        muted:    "#9CA3AF",
+        primary:  "#0A84FF",
+        secondary:"#FF6B35",
+        green:    "#00A6A6",
+        purple:   "#7C5CFC",
+        rose:     "#F43F5E",
       },
       boxShadow: {
-        card: "0 18px 40px rgba(20, 31, 56, 0.08)",
-        float: "0 26px 60px rgba(10, 132, 255, 0.12)"
+        card:  "0 2px 12px rgba(26, 31, 46, 0.06)",
+        float: "0 8px 28px rgba(26, 31, 46, 0.10)",
       },
-      backgroundImage: {
-        "speed-lines":
-          "linear-gradient(125deg, rgba(10,132,255,0.08) 0%, rgba(10,132,255,0.08) 12%, transparent 12%, transparent 100%)",
-        "track-grid":
-          "linear-gradient(rgba(26,26,46,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(26,26,46,0.04) 1px, transparent 1px)"
+      borderRadius: {
+        "2xl": "16px",
+        "3xl": "20px",
       }
     }
   },

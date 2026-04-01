@@ -4,57 +4,72 @@ import { CategoryIcon } from "./category-icon";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-line/80 bg-[#f5f6fa]/90 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-3">
-            <span className="flex h-12 w-12 items-center justify-center rounded-[18px] bg-gradient-to-br from-primary to-[#65b7ff] text-white shadow-float">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-6 w-6">
-                <circle cx="12" cy="12" r="6.5" />
-                <path d="M12 5.5v3M5.5 12h3M12 15.5v3M15.5 12h3M7.5 7.5l2.1 2.1M16.5 7.5l-2.1 2.1" />
-              </svg>
-            </span>
-            <span>
-              <span className="block text-[11px] font-semibold uppercase tracking-[0.36em] text-primary">
-                Motoquan Media
-              </span>
-              <span className="mt-1 block text-xl font-semibold text-heading">摩圈产业新闻台</span>
-            </span>
+    <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-[#E4E6EF]">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-3 group">
+            <img
+              src="/logo.svg"
+              alt="摩托圈"
+              className="h-9 w-auto"
+            />
+            <div className="hidden sm:block">
+              <span className="text-sm font-semibold text-[#1A1A2E]">摩托圈</span>
+              <span className="ml-2 text-xs text-[#9CA3AF] tracking-widest">MOTORCYCLE CIRCLE</span>
+            </div>
           </Link>
 
-          <div className="hidden items-center gap-3 lg:flex">
+          {/* Nav */}
+          <nav className="flex items-center gap-2">
             <Link
               href="/"
-              className="rounded-full border border-line bg-surface px-4 py-2 text-sm font-medium text-heading transition hover:border-primary hover:text-primary"
+              className="px-4 py-2 text-sm font-medium text-[#6B7280] rounded-full transition-colors hover:bg-[#F5F6FA] hover:text-[#1A1A2E]"
             >
               首页
             </Link>
             <Link
               href="/articles"
-              className="rounded-full bg-secondary px-4 py-2 text-sm font-medium text-white transition hover:bg-[#ff7b4d]"
+              className="px-4 py-2 text-sm font-semibold text-white bg-[#FF6B35] rounded-full transition-colors hover:bg-[#e8551a]"
             >
-              进入文章流
+              文章流
             </Link>
+            <Link
+              href="/admin"
+              className="px-4 py-2 text-sm font-medium text-[#9CA3AF] rounded-full transition-colors hover:bg-[#F5F6FA] hover:text-[#1A1A2E]"
+            >
+              后台
+            </Link>
+          </nav>
+        </div>
+      </div>
+
+      {/* Category strip */}
+      <div className="border-t border-[#F5F6FA]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="hide-scrollbar flex items-center gap-1 overflow-x-auto py-2">
+            <Link
+              href="/articles"
+              className="flex min-w-fit items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold bg-[#1A1A2E] text-white transition-colors hover:bg-[#2d2d4a]"
+            >
+              全部
+            </Link>
+            {categoryMeta.map((item) => (
+              <Link
+                key={item.label}
+                href={`/articles?category=${encodeURIComponent(item.label)}`}
+                className="flex min-w-fit items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold transition-colors hover:opacity-80"
+                style={{
+                  backgroundColor: item.softColor,
+                  color: item.color,
+                }}
+              >
+                <CategoryIcon icon={item.icon} className="w-3.5 h-3.5" />
+                {item.label}
+              </Link>
+            ))}
           </div>
         </div>
-
-        <nav className="hide-scrollbar flex items-center gap-3 overflow-x-auto pb-1">
-          {categoryMeta.map((item) => (
-            <Link
-              key={item.label}
-              href={`/articles?category=${encodeURIComponent(item.label)}`}
-              className="flex min-w-fit items-center gap-2 rounded-full border border-transparent bg-surface px-4 py-2 text-sm font-medium text-heading shadow-card transition hover:-translate-y-0.5 hover:border-line"
-            >
-              <span
-                className="flex h-8 w-8 items-center justify-center rounded-full"
-                style={{ backgroundColor: item.softColor, color: item.color }}
-              >
-                <CategoryIcon icon={item.icon} />
-              </span>
-              <span>{item.label}</span>
-            </Link>
-          ))}
-        </nav>
       </div>
     </header>
   );

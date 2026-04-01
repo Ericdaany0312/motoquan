@@ -5,30 +5,44 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const category = searchParams.get('category');
   const status = searchParams.get('status');
-  const limit = parseInt(searchParams.get('limit') || '20');
+  const limit = parseInt(searchParams.get('limit') || '30');
+  const page = parseInt(searchParams.get('page') || '1');
+  const offset = (page - 1) * limit;
   const featured = searchParams.get('featured');
+  const count = searchParams.get('count') === 'true';
 
   let query = supabase
     .from('articles')
-    .select('*')
+    .select(count ? 'id' : '*', count ? { count: 'exact' } : undefined)
     .order('published_at', { ascending: false })
-    .limit(limit);
+    .limit(limit)
+    .range(offset, offset + limit - 1);
 
   if (status && status !== 'all') {
     query = query.eq('status', status);
+  }
+
+  if (category && category !== '全部') {
+    query = query.eq('category', category);
   }
 
   if (featured === 'true') {
     query = query.eq('featured', true).limit(1);
   }
 
-  const { data, error } = await query;
+  const { data, error, count: totalCount } = await query;
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json(data || []);
+  return NextResponse.json({
+    data: data || [],
+    total: totalCount ?? 0,
+    page,
+    limit,
+    hasMore: (totalCount ?? 0) > page * limit,
+  });
 }
 
 export async function POST(request: NextRequest) {

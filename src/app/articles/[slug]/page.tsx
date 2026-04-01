@@ -24,13 +24,13 @@ export default function ArticleDetailPage({ params }: { params: { slug: string }
 
   useEffect(() => {
     async function load() {
-      const [art, related, cats] = await Promise.all([
+      const [art, relatedResult, cats] = await Promise.all([
         getArticleBySlug(params.slug),
-        getPublishedArticles(undefined, 4),
+        getPublishedArticles(undefined, 4, 1),
         getPublicCategories(),
       ]);
       setArticle(art);
-      setRelatedArticles(related.filter((a) => a.slug !== params.slug).slice(0, 3));
+      setRelatedArticles(relatedResult.articles.filter((a) => a.slug !== params.slug).slice(0, 3));
       setCategories(cats);
       if (art) {
         const cat = cats.find((c) => c.name === art.category);

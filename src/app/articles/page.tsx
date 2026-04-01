@@ -1,31 +1,64 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { ArticleCard } from '@/components/article-card';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 import { getPublishedArticles, getPublicCategories, PublicArticle, PublicCategory } from '@/lib/public-data';
 
+const PAGE_SIZE = 30;
+
 export default function ArticlesPage() {
   const [articles, setArticles] = useState<PublicArticle[]>([]);
   const [categories, setCategories] = useState<PublicCategory[]>([]);
   const [currentCategory, setCurrentCategory] = useState('全部');
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+
+  const fetchArticles = useCallback(async (cat: string, pg: number, append = false) => {
+    if (append) setLoadingMore(true);
+    else setLoading(true);
+    const result = await getPublishedArticles(
+      cat === '全部' ? undefined : cat,
+      PAGE_SIZE,
+      pg
+    );
+    if (append) {
+      setArticles(prev => [...prev, ...result.articles]);
+    } else {
+      setArticles(result.articles);
+    }
+    setTotal(result.total);
+    setHasMore(result.hasMore);
+    setPage(pg);
+    if (append) setLoadingMore(false);
+    else setLoading(false);
+  }, []);
 
   useEffect(() => {
     async function load() {
-      setLoading(true);
-      const [arts, cats] = await Promise.all([
-        getPublishedArticles(currentCategory === '全部' ? undefined : currentCategory),
-        getPublicCategories(),
-      ]);
-      setArticles(arts);
+      const cats = await getPublicCategories();
       setCategories(cats);
-      setLoading(false);
+      await fetchArticles(currentCategory, 1, false);
     }
     load();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentCategory]);
+
+  const handleLoadMore = () => {
+    if (!hasMore || loadingMore) return;
+    fetchArticles(currentCategory, page + 1, true);
+  };
+
+  const handleCategoryChange = (cat: string) => {
+    setCurrentCategory(cat);
+    setPage(1);
+    setArticles([]);
+  };
 
   return (
     <div className="page-shell min-h-screen bg-canvas">
@@ -44,7 +77,7 @@ export default function ArticlesPage() {
             <div className="grid gap-3 sm:grid-cols-2">
               {[
                 ['当前栏目', currentCategory],
-                ['内容总量', `${articles.length} 篇`],
+                ['内容总量', `${total} 篇`],
               ].map(([label, value]) => (
                 <div key={label} className="rounded-[22px] border border-line bg-canvas px-4 py-3">
                   <p className="text-xs text-body">{label}</p>
@@ -58,7 +91,7 @@ export default function ArticlesPage() {
           <div className="mt-6">
             <div className="flex flex-wrap gap-2">
               <button
-                onClick={() => setCurrentCategory('全部')}
+                onClick={() => handleCategoryChange('全部')}
                 className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
                   currentCategory === '全部'
                     ? 'bg-[#0A84FF] text-white'
@@ -70,7 +103,7 @@ export default function ArticlesPage() {
               {categories.map((cat) => (
                 <button
                   key={cat.id}
-                  onClick={() => setCurrentCategory(cat.name)}
+                  onClick={() => handleCategoryChange(cat.name)}
                   className={`rounded-full px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80 ${
                     currentCategory === cat.name ? 'ring-2 ring-offset-2' : ''
                   }`}
@@ -99,10 +132,40 @@ export default function ArticlesPage() {
               </Link>
             </div>
           ) : (
-            articles.map((article) => {
-              const cat = categories.find((c) => c.name === article.category) || null;
-              return <ArticleCard key={article.slug} article={article} category={cat} variant="list" />;
-            })
+            <>
+              {articles.map((article) => {
+                const cat = categories.find((c) => c.name === article.category) || null;
+                return <ArticleCard key={article.slug} article={article} category={cat} variant="list" />;
+              })}
+
+              {/* Load More / Pagination */}
+              {hasMore && (
+                <div className="flex justify-center pt-4">
+                  <button
+                    onClick={handleLoadMore}
+                    disabled={loadingMore}
+                    className="flex items-center gap-2 rounded-full border-2 border-[#FF6B35] px-8 py-3 text-sm font-semibold text-[#FF6B35] transition hover:bg-[#FF6B35] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loadingMore ? (
+                      <>
+                        <span className="animate-pulse">加载中...</span>
+                      </>
+                    ) : (
+                      <>
+                        加载更多
+                        <span className="text-xs opacity-70">（{articles.length} / {total}）</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
+
+              {!hasMore && articles.length > 0 && (
+                <p className="text-center text-sm text-[#9CA3AF] py-4">
+                  — 已加载全部 {total} 篇文章 —
+                </p>
+              )}
+            </>
           )}
         </section>
       </main>
