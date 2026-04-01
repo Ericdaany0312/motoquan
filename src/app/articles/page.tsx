@@ -1,23 +1,37 @@
-import { ArticleCard } from "@/components/article-card";
-import { CategoryTabs } from "@/components/category-tabs";
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
-import { categories, getArticlesByCategory } from "@/lib/articles";
+'use client';
 
-type ArticlesPageProps = {
-  searchParams?: {
-    category?: string;
-  };
-};
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { ArticleCard } from '@/components/article-card';
+import { SiteFooter } from '@/components/site-footer';
+import { SiteHeader } from '@/components/site-header';
+import { getPublishedArticles, getPublicCategories, PublicArticle, PublicCategory } from '@/lib/public-data';
 
-export default function ArticlesPage({ searchParams }: ArticlesPageProps) {
-  const currentCategory = searchParams?.category ?? "全部";
-  const articles = getArticlesByCategory(currentCategory);
+export default function ArticlesPage() {
+  const [articles, setArticles] = useState<PublicArticle[]>([]);
+  const [categories, setCategories] = useState<PublicCategory[]>([]);
+  const [currentCategory, setCurrentCategory] = useState('全部');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      setLoading(true);
+      const [arts, cats] = await Promise.all([
+        getPublishedArticles(currentCategory === '全部' ? undefined : currentCategory),
+        getPublicCategories(),
+      ]);
+      setArticles(arts);
+      setCategories(cats);
+      setLoading(false);
+    }
+    load();
+  }, [currentCategory]);
 
   return (
     <div className="page-shell min-h-screen bg-canvas">
       <SiteHeader />
       <main className="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        {/* Header */}
         <section className="speed-mark rounded-[34px] border border-line bg-surface p-6 shadow-card sm:p-7">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
@@ -29,8 +43,8 @@ export default function ArticlesPage({ searchParams }: ArticlesPageProps) {
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               {[
-                ["当前栏目", currentCategory],
-                ["内容总量", `${articles.length} 篇`]
+                ['当前栏目', currentCategory],
+                ['内容总量', `${articles.length} 篇`],
               ].map(([label, value]) => (
                 <div key={label} className="rounded-[22px] border border-line bg-canvas px-4 py-3">
                   <p className="text-xs text-body">{label}</p>
@@ -40,15 +54,56 @@ export default function ArticlesPage({ searchParams }: ArticlesPageProps) {
             </div>
           </div>
 
+          {/* Category Tabs */}
           <div className="mt-6">
-            <CategoryTabs categories={categories} current={currentCategory} basePath="/articles" />
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={() => setCurrentCategory('全部')}
+                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                  currentCategory === '全部'
+                    ? 'bg-[#0A84FF] text-white'
+                    : 'bg-[#0A84FF]/10 text-[#0A84FF] hover:bg-[#0A84FF]/20'
+                }`}
+              >
+                全部
+              </button>
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setCurrentCategory(cat.name)}
+                  className={`rounded-full px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80 ${
+                    currentCategory === cat.name ? 'ring-2 ring-offset-2' : ''
+                  }`}
+                  style={{ backgroundColor: cat.color }}
+                >
+                  {cat.icon} {cat.name}
+                </button>
+              ))}
+            </div>
           </div>
         </section>
 
+        {/* Article List */}
         <section className="mt-8 space-y-5">
-          {articles.map((article) => (
-            <ArticleCard key={article.slug} article={article} variant="list" />
-          ))}
+          {loading ? (
+            <div className="text-center py-20 text-body">
+              <div className="text-4xl mb-4 animate-pulse">🏍️</div>
+              <p>加载中...</p>
+            </div>
+          ) : articles.length === 0 ? (
+            <div className="text-center py-20 text-body">
+              <div className="text-5xl mb-4">📰</div>
+              <p className="text-lg">暂无{currentCategory === '全部' ? '' : currentCategory}文章</p>
+              <Link href="/admin/articles/new" className="mt-4 text-primary hover:underline text-sm inline-block">
+                去后台发布第一篇 →
+              </Link>
+            </div>
+          ) : (
+            articles.map((article) => {
+              const cat = categories.find((c) => c.name === article.category) || null;
+              return <ArticleCard key={article.slug} article={article} category={cat} variant="list" />;
+            })
+          )}
         </section>
       </main>
       <SiteFooter />

@@ -1,58 +1,67 @@
 import Link from "next/link";
 import { ArticleCard } from "@/components/article-card";
-import { CategoryTabs } from "@/components/category-tabs";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import {
-  categories,
+  getPublishedArticles,
+  getFeaturedArticle,
+  getTrendingArticles,
+  getPublicCategories,
   formatArticleDate,
-  getCategoryMeta,
-  getFeaturedArticles,
-  getLatestArticles,
-  getTrendingArticles
-} from "@/lib/articles";
+} from "@/lib/public-data";
 
-export default function HomePage() {
-  const featured = getFeaturedArticles()[0];
-  const latestArticles = getLatestArticles(6);
-  const trendingArticles = getTrendingArticles(4);
-  const featuredCategory = featured ? getCategoryMeta(featured.category) : null;
+export const revalidate = 60; // Revalidate every 60 seconds
+
+export default async function HomePage() {
+  const [featured, latestArticles, trendingArticles, categories] = await Promise.all([
+    getFeaturedArticle(),
+    getPublishedArticles(undefined, 6),
+    getTrendingArticles(4),
+    getPublicCategories(),
+  ]);
+
+  const featuredCategory = featured
+    ? categories.find((c) => c.name === featured.category) || null
+    : null;
+
+  const featuredGradientFrom = featuredCategory?.color || '#0A84FF';
+  const featuredGradientTo = adjustBrightness(featuredGradientFrom, -25);
 
   return (
     <div className="page-shell min-h-screen bg-canvas">
       <SiteHeader />
       <main className="relative z-10">
+        {/* Hero Section */}
         <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.55fr)_340px]">
-            {featured && featuredCategory ? (
+            {/* Featured Article */}
+            {featured ? (
               <article className="speed-mark rounded-[36px] border border-line bg-surface overflow-hidden shadow-float">
-                {/* Full gradient card with diagonal overlay */}
                 <div
                   className="diagonal-frame relative rounded-[30px] m-3 p-6 sm:p-8 text-white"
                   style={{
-                    background: `linear-gradient(140deg, ${featured.coverPalette.from} 0%, ${featured.coverPalette.to} 100%)`
+                    background: `linear-gradient(140deg, ${featuredGradientFrom} 0%, ${featuredGradientTo} 100%)`,
                   }}
                 >
                   <div className="flex flex-wrap items-center gap-3 mb-4">
                     <span className="rounded-full bg-white/20 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em]">
                       Featured
                     </span>
-                    <span
-                      className="rounded-full px-3 py-1.5 text-xs font-semibold"
-                      style={{ backgroundColor: 'rgba(255,255,255,0.22)', color: '#fff' }}
-                    >
-                      {featured.category}
-                    </span>
+                    {featuredCategory && (
+                      <span
+                        className="rounded-full px-3 py-1.5 text-xs font-semibold"
+                        style={{ backgroundColor: 'rgba(255,255,255,0.22)', color: '#fff' }}
+                      >
+                        {featuredCategory.icon} {featuredCategory.name}
+                      </span>
+                    )}
                   </div>
 
                   <div className="max-w-2xl">
-                    <p className="text-sm font-medium text-white/80">{featured.deck}</p>
-                    <h1 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-4xl">
+                    <p className="text-sm font-medium text-white/80">{featured.summary.slice(0, 80)}...</p>
+                    <h1 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-4xl line-clamp-3">
                       {featured.title}
                     </h1>
-                    <p className="mt-3 text-sm leading-6 text-white/85 sm:text-base">
-                      {featured.summary}
-                    </p>
 
                     <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-white/70">
                       <span>{formatArticleDate(featured.publishedAt)}</span>
@@ -63,15 +72,6 @@ export default function HomePage() {
                       <span>·</span>
                       <span>{featured.readMinutes} 分钟</span>
                     </div>
-
-                    <ul className="mt-4 space-y-1.5">
-                      {featured.keyPoints.slice(0, 3).map((point) => (
-                        <li key={point} className="flex items-start gap-2 text-xs text-white/80">
-                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-white/60" />
-                          {point}
-                        </li>
-                      ))}
-                    </ul>
 
                     <div className="mt-5 flex flex-wrap gap-3">
                       <Link
@@ -90,44 +90,57 @@ export default function HomePage() {
                   </div>
                 </div>
               </article>
-            ) : null}
+            ) : (
+              <div className="flex items-center justify-center rounded-[36px] border border-line bg-surface p-20 text-body">
+                <div className="text-center">
+                  <div className="text-5xl mb-4">🏍️</div>
+                  <p>暂无精选文章</p>
+                  <Link href="/admin/articles/new" className="mt-3 text-sm text-primary hover:underline inline-block">
+                    去后台发布第一篇 →
+                  </Link>
+                </div>
+              </div>
+            )}
 
+            {/* Trending Sidebar */}
             <aside className="rounded-[32px] border border-line bg-surface p-5 shadow-card sm:p-6">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-secondary">Trending</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.34em] text-[#FF6B35]">Trending</p>
                   <h2 className="mt-2 text-2xl font-semibold text-heading">热读雷达</h2>
                 </div>
-                <span className="rounded-full bg-secondarySoft px-3 py-1 text-xs font-semibold text-secondary">
+                <span className="rounded-full bg-[#FF6B35]/10 px-3 py-1 text-xs font-semibold text-[#FF6B35]">
                   Orange Desk
                 </span>
               </div>
 
               <div className="mt-6 space-y-4">
-                {trendingArticles.map((article, index) => (
+                {trendingArticles.length > 0 ? trendingArticles.map((article, index) => (
                   <Link
                     key={article.slug}
                     href={`/articles/${article.slug}`}
-                    className="block rounded-[24px] border border-line p-4 transition hover:-translate-y-0.5 hover:border-secondary/30"
+                    className="block rounded-[24px] border border-line p-4 transition hover:-translate-y-0.5 hover:border-[#FF6B35]/30"
                   >
                     <div className="flex items-start gap-4">
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-white">
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#FF6B35] text-sm font-semibold text-white">
                         {index + 1}
                       </span>
                       <div>
-                        <p className="text-xs font-medium text-secondary">{article.category}</p>
-                        <h3 className="mt-2 text-base font-semibold leading-6 text-heading">{article.title}</h3>
+                        <p className="text-xs font-medium text-[#FF6B35]">{article.category}</p>
+                        <h3 className="mt-2 text-base font-semibold leading-6 text-heading line-clamp-2">{article.title}</h3>
                         <p className="mt-2 text-xs text-body">
                           {article.metrics.views} 阅读 · {article.metrics.comments} 讨论
                         </p>
                       </div>
                     </div>
                   </Link>
-                ))}
+                )) : (
+                  <p className="text-center text-body text-sm py-8">暂无数据</p>
+                )}
               </div>
 
-              <div className="mt-6 rounded-[24px] bg-secondarySoft p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-secondary">Quick Brief</p>
+              <div className="mt-6 rounded-[24px] bg-[#FF6B35]/5 p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#FF6B35]">Quick Brief</p>
                 <p className="mt-3 text-sm leading-7 text-heading">
                   关注发布、零售、改装与装备消费的交叉变化，保持一眼可扫的行业阅读效率。
                 </p>
@@ -136,6 +149,7 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Category Navigation */}
         <section className="mx-auto max-w-7xl px-4 pb-6 sm:px-6 lg:px-8">
           <div className="rounded-[30px] border border-line bg-surface p-5 shadow-card sm:p-6">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -148,11 +162,29 @@ export default function HomePage() {
               </p>
             </div>
             <div className="mt-5">
-              <CategoryTabs categories={categories} current="全部" basePath="/articles" />
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  href="/articles"
+                  className="rounded-full bg-[#0A84FF] px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+                >
+                  全部
+                </Link>
+                {categories.map((cat) => (
+                  <Link
+                    key={cat.id}
+                    href={`/articles?category=${encodeURIComponent(cat.name)}`}
+                    className="rounded-full px-4 py-2 text-sm font-semibold text-white transition hover:opacity-80"
+                    style={{ backgroundColor: cat.color }}
+                  >
+                    {cat.icon} {cat.name}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
+        {/* Latest Articles Grid */}
         <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8">
           <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
@@ -164,14 +196,34 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {latestArticles.map((article) => (
-              <ArticleCard key={article.slug} article={article} />
-            ))}
-          </div>
+          {latestArticles.length > 0 ? (
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {latestArticles.map((article) => {
+                const cat = categories.find((c) => c.name === article.category) || null;
+                return <ArticleCard key={article.slug} article={article} category={cat} />;
+              })}
+            </div>
+          ) : (
+            <div className="text-center py-16 text-body">
+              <div className="text-5xl mb-4">📰</div>
+              <p className="text-lg">暂无文章</p>
+              <p className="mt-2 text-sm">去后台发布几篇文章吧</p>
+              <Link href="/admin/articles/new" className="mt-4 text-primary hover:underline text-sm inline-block">
+                写新文章 →
+              </Link>
+            </div>
+          )}
         </section>
       </main>
       <SiteFooter />
     </div>
   );
+}
+
+function adjustBrightness(hex: string, amount: number): string {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const r = Math.max(0, Math.min(255, (num >> 16) + amount));
+  const g = Math.max(0, Math.min(255, ((num >> 8) & 0xff) + amount));
+  const b = Math.max(0, Math.min(255, (num & 0xff) + amount));
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
 }
