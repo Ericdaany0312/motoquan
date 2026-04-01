@@ -28,7 +28,7 @@ export default function ArticleForm({ articleId }: Props) {
     readMinutes: 5,
   });
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
-  const [errors: Record<string, string>> = {};
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     setCategories(getCategories());
