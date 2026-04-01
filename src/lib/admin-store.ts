@@ -17,6 +17,8 @@ export interface Article {
   publishedAt: string;
   readMinutes: number;
   metrics: { views: string; comments: number };
+  sourceId?: string;
+  originalUrl?: string;
 }
 
 export interface Category {
@@ -26,6 +28,38 @@ export interface Category {
   color: string;
   icon: string;
   count?: number;
+}
+
+export interface Source {
+  id: string;
+  source_name: string;
+  source_name_cn: string;
+  source_type: string;
+  country: string;
+  language: string;
+  domain: string;
+  url: string;
+  priority_level: string;
+  status: string;
+}
+
+// Sources API
+export async function getSourcesAPI(): Promise<Source[]> {
+  const res = await fetch('/api/sources');
+  if (!res.ok) return [];
+  const data = await res.json();
+  return data.map((s: any) => ({
+    id: s.id,
+    source_name: s.source_name,
+    source_name_cn: s.source_name_cn || s.source_name,
+    source_type: s.source_type,
+    country: s.country,
+    language: s.language,
+    domain: s.domain,
+    url: s.url,
+    priority_level: s.priority_level,
+    status: s.status,
+  }));
 }
 
 // Auth

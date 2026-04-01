@@ -64,6 +64,8 @@ export async function POST(request: NextRequest) {
       read_minutes: body.readMinutes || 5,
       views: '0',
       comments_count: 0,
+      source_id: body.sourceId || null,
+      original_url: body.originalUrl || '',
     }])
     .select()
     .single();

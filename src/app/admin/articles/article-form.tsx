@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import {
   getCategoriesAPI,
+  getSourcesAPI,
   getArticleByIdAPI,
   saveArticleAPI,
   updateArticleAPI,
@@ -18,6 +19,7 @@ export default function ArticleForm({ articleId }: Props) {
   const router = useRouter();
   const isEdit = !!articleId;
   const [categories, setCategories] = useState<any[]>([]);
+  const [sources, setSources] = useState<any[]>([]);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -32,14 +34,17 @@ export default function ArticleForm({ articleId }: Props) {
     featured: false,
     author: '管理员',
     readMinutes: 5,
+    sourceId: '',
+    originalUrl: '',
   });
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     async function init() {
-      const cats = await getCategoriesAPI();
+      const [cats, srcs] = await Promise.all([getCategoriesAPI(), getSourcesAPI()]);
       setCategories(cats);
+      setSources(srcs);
       if (articleId) {
         const existing = await getArticleByIdAPI(articleId);
         if (existing) {
@@ -55,6 +60,8 @@ export default function ArticleForm({ articleId }: Props) {
             featured: existing.featured || false,
             author: existing.author,
             readMinutes: existing.readMinutes || 5,
+            sourceId: (existing as any).sourceId || '',
+            originalUrl: (existing as any).originalUrl || '',
           });
           setSlugManuallyEdited(true);
         }
@@ -195,6 +202,31 @@ export default function ArticleForm({ articleId }: Props) {
                   <option key={c.id} value={c.name}>{c.icon} {c.name}</option>
                 ))}
               </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-heading mb-1.5">文章来源</label>
+              <select
+                value={form.sourceId}
+                onChange={(e) => setForm((f) => ({ ...f, sourceId: e.target.value }))}
+                className="w-full px-4 py-2.5 border border-line rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+              >
+                <option value="">无 / 原创</option>
+                {sources.map((s) => (
+                  <option key={s.id} value={s.id}>{s.source_name_cn} ({s.country})</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-heading mb-1.5">原文链接</label>
+              <input
+                type="url"
+                value={form.originalUrl}
+                onChange={(e) => setForm((f) => ({ ...f, originalUrl: e.target.value }))}
+                placeholder="https://..."
+                className="w-full px-4 py-2.5 border border-line rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+              />
             </div>
 
             <div>
