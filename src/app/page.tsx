@@ -26,70 +26,67 @@ export default function HomePage() {
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.55fr)_340px]">
             {featured && featuredCategory ? (
               <article className="speed-mark rounded-[36px] border border-line bg-surface overflow-hidden shadow-float">
-                {/* Color bar top */}
+                {/* Full gradient card with diagonal overlay */}
                 <div
-                  className="h-3"
+                  className="diagonal-frame relative rounded-[30px] m-3 p-6 sm:p-8 text-white"
                   style={{
-                    background: `linear-gradient(90deg, ${featured.coverPalette.from}, ${featured.coverPalette.to})`
+                    background: `linear-gradient(140deg, ${featured.coverPalette.from} 0%, ${featured.coverPalette.to} 100%)`
                   }}
-                />
-                <div className="p-6 sm:p-8">
-                  {/* Category + Meta */}
-                  <div className="flex flex-wrap items-center gap-3 mb-5">
-                    <span className="rounded-full bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                >
+                  <div className="flex flex-wrap items-center gap-3 mb-4">
+                    <span className="rounded-full bg-white/20 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em]">
                       Featured
                     </span>
                     <span
-                      className="rounded-full px-3 py-1.5 text-xs font-semibold text-white"
-                      style={{ backgroundColor: featuredCategory.color }}
+                      className="rounded-full px-3 py-1.5 text-xs font-semibold"
+                      style={{ backgroundColor: 'rgba(255,255,255,0.22)', color: '#fff' }}
                     >
                       {featured.category}
                     </span>
-                    <span className="text-xs text-body">{formatArticleDate(featured.publishedAt)}</span>
-                    <span className="text-xs text-body">·</span>
-                    <span className="text-xs text-body">{featured.readMinutes} 分钟阅读</span>
                   </div>
 
-                  {/* Title */}
-                  <Link href={`/articles/${featured.slug}`}>
-                    <h1 className="text-2xl font-bold leading-tight text-heading sm:text-4xl hover:text-primary transition">
+                  <div className="max-w-2xl">
+                    <p className="text-sm font-medium text-white/80">{featured.deck}</p>
+                    <h1 className="mt-3 text-2xl font-bold leading-tight text-white sm:text-4xl">
                       {featured.title}
                     </h1>
-                  </Link>
+                    <p className="mt-3 text-sm leading-6 text-white/85 sm:text-base">
+                      {featured.summary}
+                    </p>
 
-                  {/* Summary */}
-                  <p className="mt-4 text-sm leading-7 text-body">
-                    {featured.summary}
-                  </p>
+                    <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-white/70">
+                      <span>{formatArticleDate(featured.publishedAt)}</span>
+                      <span>·</span>
+                      <span>{featured.author}</span>
+                      <span>·</span>
+                      <span>{featured.metrics.views} 阅读</span>
+                      <span>·</span>
+                      <span>{featured.readMinutes} 分钟</span>
+                    </div>
 
-                  {/* Key Points */}
-                  <ul className="mt-5 space-y-2.5">
-                    {featured.keyPoints.slice(0, 3).map((point) => (
-                      <li key={point} className="flex items-start gap-2.5 text-sm text-body">
-                        <span
-                          className="mt-1.5 h-2 w-2 shrink-0 rounded-full"
-                          style={{ backgroundColor: featuredCategory.color }}
-                        />
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
+                    <ul className="mt-4 space-y-1.5">
+                      {featured.keyPoints.slice(0, 3).map((point) => (
+                        <li key={point} className="flex items-start gap-2 text-xs text-white/80">
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-white/60" />
+                          {point}
+                        </li>
+                      ))}
+                    </ul>
 
-                  {/* Actions */}
-                  <div className="mt-7 flex flex-wrap items-center gap-3">
-                    <Link
-                      href={`/articles/${featured.slug}`}
-                      className="rounded-full px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
-                      style={{ backgroundColor: featuredCategory.color }}
-                    >
-                      阅读全文 →
-                    </Link>
-                    <Link
-                      href="/articles"
-                      className="rounded-full border border-line px-5 py-2.5 text-sm font-medium text-body transition hover:border-primary hover:text-primary"
-                    >
-                      更多报道
-                    </Link>
+                    <div className="mt-5 flex flex-wrap gap-3">
+                      <Link
+                        href={`/articles/${featured.slug}`}
+                        className="rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-heading transition hover:bg-white/90"
+                      >
+                        阅读全文 →
+                      </Link>
+                      <Link
+                        href="/articles"
+                        className="rounded-full border border-white/30 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-white/10"
+                      >
+                        更多报道
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </article>
