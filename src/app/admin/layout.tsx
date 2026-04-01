@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { getAuthStatus, logout } from '@/lib/admin-store';
+import { getAuthStatus, login, logout } from '@/lib/admin-store';
 
 const navItems = [
   { href: '/admin', label: '数据看板', icon: '📊' },
@@ -33,7 +33,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              const { login } = require('@/lib/admin-store');
               if (login(loginForm.email, loginForm.password)) {
                 setAuthenticated(true);
                 setLoginError(false);

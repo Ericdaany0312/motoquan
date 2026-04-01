@@ -25,56 +25,71 @@ export default function HomePage() {
         <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.55fr)_340px]">
             {featured && featuredCategory ? (
-              <article className="speed-mark rounded-[36px] border border-line bg-surface p-5 shadow-float sm:p-6">
+              <article className="speed-mark rounded-[36px] border border-line bg-surface overflow-hidden shadow-float">
+                {/* Color bar top */}
                 <div
-                  className="diagonal-frame relative min-h-[420px] rounded-[30px] p-6 text-white sm:p-8"
+                  className="h-3"
                   style={{
-                    background: `linear-gradient(135deg, ${featured.coverPalette.from}, ${featured.coverPalette.to})`
+                    background: `linear-gradient(90deg, ${featured.coverPalette.from}, ${featured.coverPalette.to})`
                   }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-t from-[rgba(26,26,46,0.82)] via-[rgba(26,26,46,0.2)] to-transparent" />
-                  <div className="relative flex h-full flex-col justify-between">
-                    <div className="flex flex-wrap items-center gap-3">
-                      <span className="rounded-full bg-white/18 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em]">
-                        Featured Story
-                      </span>
-                      <span
-                        className="rounded-full px-4 py-2 text-xs font-semibold"
-                        style={{ backgroundColor: "rgba(255,255,255,0.18)", color: "#ffffff" }}
-                      >
-                        {featured.category}
-                      </span>
-                    </div>
+                />
+                <div className="p-6 sm:p-8">
+                  {/* Category + Meta */}
+                  <div className="flex flex-wrap items-center gap-3 mb-5">
+                    <span className="rounded-full bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                      Featured
+                    </span>
+                    <span
+                      className="rounded-full px-3 py-1.5 text-xs font-semibold text-white"
+                      style={{ backgroundColor: featuredCategory.color }}
+                    >
+                      {featured.category}
+                    </span>
+                    <span className="text-xs text-body">{formatArticleDate(featured.publishedAt)}</span>
+                    <span className="text-xs text-body">·</span>
+                    <span className="text-xs text-body">{featured.readMinutes} 分钟阅读</span>
+                  </div>
 
-                    <div className="max-w-3xl">
-                      <p className="text-sm font-medium text-white/78">{featured.deck}</p>
-                      <h1 className="mt-4 text-3xl font-semibold leading-tight sm:text-5xl">
-                        {featured.title}
-                      </h1>
-                      <p className="mt-4 max-w-2xl text-sm leading-7 text-white/82 sm:text-base">
-                        {featured.summary}
-                      </p>
-                      <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-white/80">
-                        <span>{formatArticleDate(featured.publishedAt)}</span>
-                        <span>{featured.author}</span>
-                        <span>{featured.metrics.views} 阅读</span>
-                        <span>{featured.readMinutes} 分钟</span>
-                      </div>
-                      <div className="mt-7 flex flex-wrap gap-3">
-                        <Link
-                          href={`/articles/${featured.slug}`}
-                          className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-heading transition hover:bg-[#f3f6fb]"
-                        >
-                          阅读封面故事
-                        </Link>
-                        <Link
-                          href="/articles"
-                          className="rounded-full border border-white/30 px-5 py-3 text-sm font-medium text-white transition hover:bg-white/12"
-                        >
-                          浏览全部报道
-                        </Link>
-                      </div>
-                    </div>
+                  {/* Title */}
+                  <Link href={`/articles/${featured.slug}`}>
+                    <h1 className="text-2xl font-bold leading-tight text-heading sm:text-4xl hover:text-primary transition">
+                      {featured.title}
+                    </h1>
+                  </Link>
+
+                  {/* Summary */}
+                  <p className="mt-4 text-sm leading-7 text-body">
+                    {featured.summary}
+                  </p>
+
+                  {/* Key Points */}
+                  <ul className="mt-5 space-y-2.5">
+                    {featured.keyPoints.slice(0, 3).map((point) => (
+                      <li key={point} className="flex items-start gap-2.5 text-sm text-body">
+                        <span
+                          className="mt-1.5 h-2 w-2 shrink-0 rounded-full"
+                          style={{ backgroundColor: featuredCategory.color }}
+                        />
+                        {point}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Actions */}
+                  <div className="mt-7 flex flex-wrap items-center gap-3">
+                    <Link
+                      href={`/articles/${featured.slug}`}
+                      className="rounded-full px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90"
+                      style={{ backgroundColor: featuredCategory.color }}
+                    >
+                      阅读全文 →
+                    </Link>
+                    <Link
+                      href="/articles"
+                      className="rounded-full border border-line px-5 py-2.5 text-sm font-medium text-body transition hover:border-primary hover:text-primary"
+                    >
+                      更多报道
+                    </Link>
                   </div>
                 </div>
               </article>
