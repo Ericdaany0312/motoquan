@@ -3,7 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { getCategories, getArticleById, saveArticle, updateArticle, slugExists, Article } from '@/lib/admin-store';
+import {
+  getCategoriesAPI,
+  getArticleByIdAPI,
+  saveArticleAPI,
+  updateArticleAPI,
+} from '@/lib/admin-store';
 
 interface Props {
   articleId?: string;
@@ -14,6 +19,7 @@ export default function ArticleForm({ articleId }: Props) {
   const isEdit = !!articleId;
   const [categories, setCategories] = useState<any[]>([]);
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     title: '',
     slug: '',
@@ -31,17 +37,30 @@ export default function ArticleForm({ articleId }: Props) {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    setCategories(getCategories());
-    if (articleId) {
-      const existing = getArticleById(articleId);
-      if (existing) {
-        setForm({
-          ...existing,
-          tags: existing.tags.join('、'),
-        });
-        setSlugManuallyEdited(true);
+    async function init() {
+      const cats = await getCategoriesAPI();
+      setCategories(cats);
+      if (articleId) {
+        const existing = await getArticleByIdAPI(articleId);
+        if (existing) {
+          setForm({
+            title: existing.title,
+            slug: existing.slug,
+            category: existing.category,
+            tags: (existing.tags || []).join('、'),
+            summary: existing.summary,
+            content: existing.content,
+            coverImage: existing.coverImage || '',
+            status: existing.status,
+            featured: existing.featured || false,
+            author: existing.author,
+            readMinutes: existing.readMinutes || 5,
+          });
+          setSlugManuallyEdited(true);
+        }
       }
     }
+    init();
   }, [articleId]);
 
   const handleTitleChange = (title: string) => {
@@ -60,31 +79,35 @@ export default function ArticleForm({ articleId }: Props) {
     const errs: Record<string, string> = {};
     if (!form.title.trim()) errs.title = '请输入标题';
     if (!form.slug.trim()) errs.slug = '请输入slug';
-    else if (slugExists(form.slug, articleId)) errs.slug = '该slug已被占用';
     if (!form.summary.trim()) errs.summary = '请输入摘要';
     if (!form.content.trim()) errs.content = '请输入正文内容';
     return errs;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const errs = validate();
     if (Object.keys(errs).length) { setErrors(errs); return; }
     setSaving(true);
-    const data = {
-      ...form,
-      slug: form.slug || slugify(form.title),
-      tags: form.tags.split(/[,，、]/).map((t) => t.trim()).filter(Boolean),
-      publishedAt: new Date().toISOString().slice(0, 10),
-      metrics: { views: '0', comments: 0 },
-    };
-    if (isEdit) {
-      updateArticle(articleId!, data);
-    } else {
-      saveArticle(data);
+    try {
+      const data = {
+        ...form,
+        slug: form.slug || slugify(form.title),
+        tags: form.tags.split(/[,，、]/).map((t) => t.trim()).filter(Boolean),
+        publishedAt: new Date().toISOString().slice(0, 10),
+        metrics: { views: '0', comments: 0 },
+      };
+      if (isEdit) {
+        await updateArticleAPI(articleId!, data);
+      } else {
+        await saveArticleAPI(data);
+      }
+      router.push('/admin/articles');
+    } catch (err) {
+      alert('保存失败：' + (err as Error).message);
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
-    router.push('/admin/articles');
   };
 
   const inputClass = (field: string) =>
@@ -195,6 +218,7 @@ export default function ArticleForm({ articleId }: Props) {
                 className="w-full px-4 py-2.5 border border-line rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
               />
               {form.coverImage && (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img src={form.coverImage} alt="预览" className="mt-2 w-full h-32 object-cover rounded-xl" onError={(e) => (e.currentTarget.style.display = 'none')} />
               )}
             </div>

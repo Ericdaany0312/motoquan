@@ -28,29 +28,6 @@ export interface Category {
   count?: number;
 }
 
-const ARTICLES_KEY = 'motoquan_articles';
-const CATEGORIES_KEY = 'motoquan_categories';
-
-const defaultCategories: Category[] = [
-  { id: '1', name: '新车发布', slug: 'new-cars', color: '#0A84FF', icon: '🏍️' },
-  { id: '2', name: '行业动态', slug: 'industry-news', color: '#FF6B35', icon: '📰' },
-  { id: '3', name: '维修教程', slug: 'repair', color: '#34C759', icon: '🔧' },
-  { id: '4', name: '配件选购', slug: 'parts', color: '#AF52DE', icon: '⚙️' },
-  { id: '5', name: '改装方案', slug: 'mod', color: '#FF9500', icon: '🔥' },
-];
-
-function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2);
-}
-
-function slugify(text: string) {
-  return text
-    .toLowerCase()
-    .replace(/[\u4e00-\u9fa5]/g, (c) => c.charCodeAt(0).toString(36))
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
-
 // Auth
 export function getAuthStatus() {
   if (typeof window === 'undefined') return false;
@@ -69,97 +46,190 @@ export function logout() {
   localStorage.removeItem('motoquan_admin_auth');
 }
 
-// Categories
-export function getCategories(): Category[] {
-  if (typeof window === 'undefined') return defaultCategories;
-  const stored = localStorage.getItem(CATEGORIES_KEY);
-  if (!stored) {
-    localStorage.setItem(CATEGORIES_KEY, JSON.stringify(defaultCategories));
-    return defaultCategories;
-  }
-  return JSON.parse(stored);
+// Categories API
+export async function getCategoriesAPI(): Promise<Category[]> {
+  const res = await fetch('/api/categories');
+  if (!res.ok) throw new Error('Failed to fetch categories');
+  const data = await res.json();
+  // Normalize snake_case from DB to camelCase
+  return data.map((c: any) => ({
+    id: c.id,
+    name: c.name,
+    slug: c.slug,
+    color: c.color,
+    icon: c.icon,
+  }));
 }
 
-export function saveCategory(category: Omit<Category, 'id'>): Category {
-  const categories = getCategories();
-  const newCategory = { ...category, id: generateId() };
-  categories.push(newCategory);
-  localStorage.setItem(CATEGORIES_KEY, JSON.stringify(categories));
-  return newCategory;
+export async function saveCategoryAPI(category: Omit<Category, 'id'>): Promise<Category> {
+  const res = await fetch('/api/categories', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(category),
+  });
+  if (!res.ok) throw new Error('Failed to create category');
+  const data = await res.json();
+  return { id: data.id, name: data.name, slug: data.slug, color: data.color, icon: data.icon };
 }
 
-export function updateCategory(id: string, updates: Partial<Category>): Category | null {
-  const categories = getCategories();
-  const index = categories.findIndex((c) => c.id === id);
-  if (index === -1) return null;
-  categories[index] = { ...categories[index], ...updates };
-  localStorage.setItem(CATEGORIES_KEY, JSON.stringify(categories));
-  return categories[index];
+export async function updateCategoryAPI(id: string, updates: Partial<Category>): Promise<Category> {
+  const res = await fetch(`/api/categories/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updates),
+  });
+  if (!res.ok) throw new Error('Failed to update category');
+  const data = await res.json();
+  return { id: data.id, name: data.name, slug: data.slug, color: data.color, icon: data.icon };
 }
 
-export function deleteCategory(id: string): boolean {
-  const categories = getCategories();
-  const filtered = categories.filter((c) => c.id !== id);
-  if (filtered.length === categories.length) return false;
-  localStorage.setItem(CATEGORIES_KEY, JSON.stringify(filtered));
-  return true;
+export async function deleteCategoryAPI(id: string): Promise<void> {
+  const res = await fetch(`/api/categories/${id}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('Failed to delete category');
 }
 
-// Articles
-export function getArticles(): Article[] {
-  if (typeof window === 'undefined') return [];
-  const stored = localStorage.getItem(ARTICLES_KEY);
-  return stored ? JSON.parse(stored) : [];
+// Articles API
+export async function getArticlesAPI(): Promise<Article[]> {
+  // Fetch all articles including drafts for admin
+  const res = await fetch('/api/articles?status=all&limit=100');
+  if (!res.ok) throw new Error('Failed to fetch articles');
+  const data = await res.json();
+  return data.map((a: any) => ({
+    id: a.id,
+    title: a.title,
+    slug: a.slug,
+    category: a.category,
+    tags: a.tags || [],
+    summary: a.summary,
+    content: a.content,
+    coverImage: a.cover_image || '',
+    status: a.status,
+    featured: a.featured,
+    author: a.author,
+    publishedAt: a.published_at,
+    readMinutes: a.read_minutes || 5,
+    metrics: { views: a.views || '0', comments: a.comments_count || 0 },
+  }));
 }
 
-export function getArticleById(id: string): Article | null {
-  return getArticles().find((a) => a.id === id) || null;
+export async function getArticleByIdAPI(id: string): Promise<Article | null> {
+  const res = await fetch(`/api/articles/${id}`);
+  if (!res.ok) return null;
+  const a = await res.json();
+  return {
+    id: a.id,
+    title: a.title,
+    slug: a.slug,
+    category: a.category,
+    tags: a.tags || [],
+    summary: a.summary,
+    content: a.content,
+    coverImage: a.cover_image || '',
+    status: a.status,
+    featured: a.featured,
+    author: a.author,
+    publishedAt: a.published_at,
+    readMinutes: a.read_minutes || 5,
+    metrics: { views: a.views || '0', comments: a.comments_count || 0 },
+  };
 }
 
-export function saveArticle(article: Omit<Article, 'id'>): Article {
-  const articles = getArticles();
-  const newArticle = { ...article, id: generateId() };
-  articles.unshift(newArticle);
-  localStorage.setItem(ARTICLES_KEY, JSON.stringify(articles));
-  return newArticle;
+export async function saveArticleAPI(article: Omit<Article, 'id'>): Promise<Article> {
+  const res = await fetch('/api/articles', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(article),
+  });
+  if (!res.ok) throw new Error('Failed to create article');
+  const a = await res.json();
+  return {
+    id: a.id,
+    title: a.title,
+    slug: a.slug,
+    category: a.category,
+    tags: a.tags || [],
+    summary: a.summary,
+    content: a.content,
+    coverImage: a.cover_image || '',
+    status: a.status,
+    featured: a.featured,
+    author: a.author,
+    publishedAt: a.published_at,
+    readMinutes: a.read_minutes || 5,
+    metrics: { views: '0', comments: 0 },
+  };
 }
 
-export function updateArticle(id: string, updates: Partial<Article>): Article | null {
-  const articles = getArticles();
-  const index = articles.findIndex((a) => a.id === id);
-  if (index === -1) return null;
-  articles[index] = { ...articles[index], ...updates };
-  localStorage.setItem(ARTICLES_KEY, JSON.stringify(articles));
-  return articles[index];
+export async function updateArticleAPI(id: string, updates: Partial<Article>): Promise<Article> {
+  const res = await fetch(`/api/articles/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(updates),
+  });
+  if (!res.ok) throw new Error('Failed to update article');
+  const a = await res.json();
+  return {
+    id: a.id,
+    title: a.title,
+    slug: a.slug,
+    category: a.category,
+    tags: a.tags || [],
+    summary: a.summary,
+    content: a.content,
+    coverImage: a.cover_image || '',
+    status: a.status,
+    featured: a.featured,
+    author: a.author,
+    publishedAt: a.published_at,
+    readMinutes: a.read_minutes || 5,
+    metrics: { views: a.views || '0', comments: a.comments_count || 0 },
+  };
 }
 
-export function deleteArticle(id: string): boolean {
-  const articles = getArticles();
-  const filtered = articles.filter((a) => a.id !== id);
-  if (filtered.length === articles.length) return false;
-  localStorage.setItem(ARTICLES_KEY, JSON.stringify(filtered));
-  return true;
-}
-
-export function slugExists(slug: string, excludeId?: string): boolean {
-  return getArticles().some((a) => a.slug === slug && a.id !== excludeId);
+export async function deleteArticleAPI(id: string): Promise<void> {
+  const res = await fetch(`/api/articles/${id}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('Failed to delete article');
 }
 
 // Hooks
 export function useArticles() {
   const [articles, setArticles] = useState<Article[]>([]);
-  useEffect(() => {
-    setArticles(getArticles());
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await getArticlesAPI();
+      setArticles(data);
+      setError(null);
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
   }, []);
-  const refresh = useCallback(() => setArticles(getArticles()), []);
-  return { articles, refresh };
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  return { articles, loading, error, refresh };
 }
 
 export function useCategories() {
-  const [categories, setCategories] = useState<Category[]>(defaultCategories);
-  useEffect(() => {
-    setCategories(getCategories());
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await getCategoriesAPI();
+      setCategories(data);
+    } finally {
+      setLoading(false);
+    }
   }, []);
-  const refresh = useCallback(() => setCategories(getCategories()), []);
-  return { categories, refresh };
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  return { categories, loading, refresh };
 }

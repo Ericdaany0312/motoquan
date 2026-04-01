@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getCategories, saveCategory, updateCategory, deleteCategory, Category } from '@/lib/admin-store';
+import { getCategoriesAPI, saveCategoryAPI, updateCategoryAPI, deleteCategoryAPI, Category } from '@/lib/admin-store';
 
 const presetColors = ['#0A84FF', '#FF6B35', '#34C759', '#AF52DE', '#FF9500', '#FF2D55', '#5856D6', '#00C7BE', '#FF3B30', '#AC8E68'];
 const presetIcons = ['🏍️', '📰', '🔧', '⚙️', '🛢️', '🔥', '💨', '🏁', '🚗', '🛵', '⛽', '🔩', '🚙', '🏎️', '🛻', '🛣️'];
@@ -13,7 +13,10 @@ export default function AdminCategoriesPage() {
   const [form, setForm] = useState({ name: '', slug: '', color: '#0A84FF', icon: '🏍️' });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const load = () => setCategories(getCategories());
+  const load = async () => {
+    const cats = await getCategoriesAPI();
+    setCategories(cats);
+  };
   useEffect(() => { load(); }, []);
 
   const openAdd = () => { setEditingId(null); setForm({ name: '', slug: '', color: '#0A84FF', icon: '🏍️' }); setErrors({}); setShowModal(true); };
@@ -24,25 +27,32 @@ export default function AdminCategoriesPage() {
     setShowModal(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const errs: Record<string, string> = {};
     if (!form.name.trim()) errs.name = '请输入分类名称';
     if (!form.slug.trim()) errs.slug = '请输入slug';
     if (Object.keys(errs).length) { setErrors(errs); return; }
-    if (editingId) {
-      updateCategory(editingId, form);
-    } else {
-      saveCategory(form);
+    try {
+      if (editingId) {
+        await updateCategoryAPI(editingId, form);
+      } else {
+        await saveCategoryAPI(form);
+      }
+      setShowModal(false);
+      load();
+    } catch (err) {
+      alert('保存失败：' + (err as Error).message);
     }
-    setShowModal(false);
-    load();
   };
 
-  const handleDelete = (id: string, name: string) => {
-    if (confirm(`确认删除分类「${name}」？`)) {
-      deleteCategory(id);
+  const handleDelete = async (id: string, name: string) => {
+    if (!confirm(`确认删除分类「${name}」？`)) return;
+    try {
+      await deleteCategoryAPI(id);
       load();
+    } catch (err) {
+      alert('删除失败：' + (err as Error).message);
     }
   };
 

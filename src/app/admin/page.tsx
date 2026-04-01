@@ -2,20 +2,22 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { getArticles, getCategories } from '@/lib/admin-store';
+import { getArticlesAPI, getCategoriesAPI } from '@/lib/admin-store';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({ articles: 0, categories: 0, published: 0, drafts: 0 });
 
   useEffect(() => {
-    const articles = getArticles();
-    const categories = getCategories();
-    setStats({
-      articles: articles.length,
-      categories: categories.length,
-      published: articles.filter((a) => a.status === 'published').length,
-      drafts: articles.filter((a) => a.status === 'draft').length,
-    });
+    async function load() {
+      const [articles, categories] = await Promise.all([getArticlesAPI(), getCategoriesAPI()]);
+      setStats({
+        articles: articles.length,
+        categories: categories.length,
+        published: articles.filter((a) => a.status === 'published').length,
+        drafts: articles.filter((a) => a.status === 'draft').length,
+      });
+    }
+    load();
   }, []);
 
   const cards = [

@@ -2,20 +2,27 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { getArticles, getCategories, deleteArticle, Article, Category } from '@/lib/admin-store';
+import { getArticlesAPI, getCategoriesAPI, deleteArticleAPI, Article, Category } from '@/lib/admin-store';
 
 export default function AdminArticlesPage() {
-  const router = useRouter();
   const [articles, setArticles] = useState<Article[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
   const [filterStatus, setFilterStatus] = useState<'all' | 'published' | 'draft'>('all');
   const [filterCategory, setFilterCategory] = useState('all');
   const [search, setSearch] = useState('');
 
-  const load = () => {
-    setArticles(getArticles());
-    setCategories(getCategories());
+  const load = async () => {
+    setLoading(true);
+    try {
+      const [arts, cats] = await Promise.all([getArticlesAPI(), getCategoriesAPI()]);
+      setArticles(arts);
+      setCategories(cats);
+    } catch (e) {
+      console.error('Failed to load:', e);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => { load(); }, []);
@@ -27,10 +34,13 @@ export default function AdminArticlesPage() {
     return true;
   });
 
-  const handleDelete = (id: string) => {
-    if (confirm('确认删除这篇文章？')) {
-      deleteArticle(id);
+  const handleDelete = async (id: string) => {
+    if (!confirm('确认删除这篇文章？')) return;
+    try {
+      await deleteArticleAPI(id);
       load();
+    } catch (e) {
+      alert('删除失败：' + (e as Error).message);
     }
   };
 
@@ -103,64 +113,67 @@ export default function AdminArticlesPage() {
 
       {/* Table */}
       <div className="bg-white rounded-2xl shadow-card overflow-hidden">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-line bg-gray-50">
-              <th className="text-left px-5 py-4 text-xs font-semibold text-body uppercase tracking-wide">封面</th>
-              <th className="text-left px-5 py-4 text-xs font-semibold text-body uppercase tracking-wide">标题</th>
-              <th className="text-left px-5 py-4 text-xs font-semibold text-body uppercase tracking-wide">分类</th>
-              <th className="text-left px-5 py-4 text-xs font-semibold text-body uppercase tracking-wide">状态</th>
-              <th className="text-left px-5 py-4 text-xs font-semibold text-body uppercase tracking-wide">日期</th>
-              <th className="text-right px-5 py-4 text-xs font-semibold text-body uppercase tracking-wide">操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="text-center py-16 text-body">
-                  <div className="text-4xl mb-3">📝</div>
-                  <p>暂无文章</p>
-                  <Link href="/admin/articles/new" className="text-primary hover:underline text-sm mt-2 inline-block">
-                    写第一篇 →
-                  </Link>
-                </td>
+        {loading ? (
+          <div className="text-center py-16 text-body">加载中...</div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-16 text-body">
+            <div className="text-4xl mb-3">📝</div>
+            <p>暂无文章</p>
+            <Link href="/admin/articles/new" className="text-primary hover:underline text-sm mt-2 inline-block">
+              写第一篇 →
+            </Link>
+          </div>
+        ) : (
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-line bg-gray-50">
+                <th className="text-left px-5 py-4 text-xs font-semibold text-body uppercase tracking-wide">封面</th>
+                <th className="text-left px-5 py-4 text-xs font-semibold text-body uppercase tracking-wide">标题</th>
+                <th className="text-left px-5 py-4 text-xs font-semibold text-body uppercase tracking-wide">分类</th>
+                <th className="text-left px-5 py-4 text-xs font-semibold text-body uppercase tracking-wide">状态</th>
+                <th className="text-left px-5 py-4 text-xs font-semibold text-body uppercase tracking-wide">日期</th>
+                <th className="text-right px-5 py-4 text-xs font-semibold text-body uppercase tracking-wide">操作</th>
               </tr>
-            ) : filtered.map((article) => (
-              <tr key={article.id} className="border-b border-line last:border-0 hover:bg-gray-50 transition">
-                <td className="px-5 py-4">
-                  {article.coverImage ? (
-                    <img src={article.coverImage} alt={article.title} className="w-14 h-10 object-cover rounded-lg" />
-                  ) : (
-                    <div className="w-14 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">📷</div>
-                  )}
-                </td>
-                <td className="px-5 py-4">
-                  <div className="font-medium text-heading line-clamp-1">{article.title}</div>
-                  <div className="text-xs text-body mt-0.5">{article.author} · {article.readMinutes}分钟阅读</div>
-                </td>
-                <td className="px-5 py-4">{categoryBadge(article.category)}</td>
-                <td className="px-5 py-4">{statusBadge(article.status)}</td>
-                <td className="px-5 py-4 text-sm text-body">{article.publishedAt}</td>
-                <td className="px-5 py-4">
-                  <div className="flex items-center justify-end gap-2">
-                    <Link
-                      href={`/admin/articles/${article.id}/edit`}
-                      className="px-3 py-1.5 text-sm text-primary border border-primary/20 rounded-lg hover:bg-primary/5 transition"
-                    >
-                      编辑
-                    </Link>
-                    <button
-                      onClick={() => handleDelete(article.id)}
-                      className="px-3 py-1.5 text-sm text-red-500 border border-red-200 rounded-lg hover:bg-red-50 transition"
-                    >
-                      删除
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filtered.map((article) => (
+                <tr key={article.id} className="border-b border-line last:border-0 hover:bg-gray-50 transition">
+                  <td className="px-5 py-4">
+                    {article.coverImage ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={article.coverImage} alt={article.title} className="w-14 h-10 object-cover rounded-lg" />
+                    ) : (
+                      <div className="w-14 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">📷</div>
+                    )}
+                  </td>
+                  <td className="px-5 py-4">
+                    <div className="font-medium text-heading line-clamp-1">{article.title}</div>
+                    <div className="text-xs text-body mt-0.5">{article.author} · {article.readMinutes}分钟阅读</div>
+                  </td>
+                  <td className="px-5 py-4">{categoryBadge(article.category)}</td>
+                  <td className="px-5 py-4">{statusBadge(article.status)}</td>
+                  <td className="px-5 py-4 text-sm text-body">{article.publishedAt}</td>
+                  <td className="px-5 py-4">
+                    <div className="flex items-center justify-end gap-2">
+                      <Link
+                        href={`/admin/articles/${article.id}/edit`}
+                        className="px-3 py-1.5 text-sm text-primary border border-primary/20 rounded-lg hover:bg-primary/5 transition"
+                      >
+                        编辑
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(article.id)}
+                        className="px-3 py-1.5 text-sm text-red-500 border border-red-200 rounded-lg hover:bg-red-50 transition"
+                      >
+                        删除
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
