@@ -10,6 +10,7 @@ import {
   saveArticleAPI,
   updateArticleAPI,
 } from '@/lib/admin-store';
+import RichTextEditor from '@/components/rich-text-editor';
 
 interface Props {
   articleId?: string;
@@ -173,13 +174,11 @@ export default function ArticleForm({ articleId }: Props) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-heading mb-1.5">正文内容 *（支持 Markdown）</label>
-              <textarea
+              <label className="block text-sm font-medium text-heading mb-1.5">正文内容 *</label>
+              <RichTextEditor
                 value={form.content}
-                onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))}
-                placeholder="输入文章正文内容，支持 Markdown 格式..."
-                rows={15}
-                className={`${inputClass('content')} font-mono text-sm leading-relaxed`}
+                onChange={(val) => setForm((f) => ({ ...f, content: val }))}
+                placeholder="输入文章正文内容，可插入图片和链接..."
               />
               {errors.content && <p className="text-red-500 text-xs mt-1">{errors.content}</p>}
             </div>

@@ -1,8 +1,20 @@
+'use client';
 import Link from "next/link";
 import { categoryMeta } from "@/lib/articles";
 import { CategoryIcon } from "./category-icon";
+import { useAuth } from "@/lib/auth-context";
+import { useRouter } from "next/navigation";
 
 export function SiteHeader() {
+  const { user, signOut, loading } = useAuth();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/");
+    router.refresh();
+  };
+
   return (
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-[#E4E6EF]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -10,13 +22,13 @@ export function SiteHeader() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
             <img
-              src="/logo.svg"
+              src="/motoquan-logo.png"
               alt="摩托圈"
-              className="h-9 w-auto"
+              className="h-[50px] w-auto"
             />
             <div className="hidden sm:block">
               <span className="text-sm font-semibold text-[#1A1A2E]">摩托圈</span>
-              <span className="ml-2 text-xs text-[#9CA3AF] tracking-widest">MOTORCYCLE CIRCLE</span>
+              <span className="ml-2 text-xs text-[#9CA3AF] tracking-widest">Moto Circle</span>
             </div>
           </Link>
 
@@ -30,16 +42,39 @@ export function SiteHeader() {
             </Link>
             <Link
               href="/articles"
-              className="px-4 py-2 text-sm font-semibold text-white bg-[#FF6B35] rounded-full transition-colors hover:bg-[#e8551a]"
+              className="px-4 py-2 text-sm font-medium text-[#6B7280] rounded-full transition-colors hover:bg-[#F5F6FA] hover:text-[#1A1A2E]"
             >
               文章流
             </Link>
             <Link
-              href="/admin"
-              className="px-4 py-2 text-sm font-medium text-[#9CA3AF] rounded-full transition-colors hover:bg-[#F5F6FA] hover:text-[#1A1A2E]"
+              href="/businesses"
+              className="px-4 py-2 text-sm font-medium text-[#6B7280] rounded-full transition-colors hover:bg-[#F5F6FA] hover:text-[#1A1A2E]"
             >
-              后台
+              供应商黄页
             </Link>
+            {user ? (
+              <>
+                <Link
+                  href="/user"
+                  className="px-4 py-2 text-sm font-medium text-[#FF6B35] rounded-full transition-colors hover:bg-[#FF6B35]/10"
+                >
+                  用户中心
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="px-4 py-2 text-sm font-medium text-[#9CA3AF] rounded-full transition-colors hover:bg-[#F5F6FA] hover:text-[#1A1A2E]"
+                >
+                  退出
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="px-4 py-2 text-sm font-medium text-[#9CA3AF] rounded-full transition-colors hover:bg-[#F5F6FA] hover:text-[#1A1A2E]"
+              >
+                登录
+              </Link>
+            )}
           </nav>
         </div>
       </div>

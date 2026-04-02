@@ -319,4 +319,49 @@ insert into categories (name, slug, color, icon) values ('新分类名', 'new-sl
 
 ---
 
-*文档版本：2026-04-01 | 由 AI 助手六百整理*
+## 十一、参考网站（学习对象）
+
+### 资讯/社区
+
+| 网站 | 网址 | 参考价值 |
+|---|---|---|
+| FoodTalks | foodtalks.cn | 资讯平台风格、内容分类、视觉设计 |
+| 摩托之家 | motohome.com | 资讯+社区，活跃度高，运营模式参考 |
+| 58摩托 | 58moto.com | 车型报价为主，内容分类结构 |
+| 指尖摩托 | motomsc.com | 行业资讯、论坛形式 |
+| 摩托欧耶 | motoyen.com | 资讯+评论风格 |
+| 摩托威视 | motovlog.com | 视频内容运营 |
+| 汽车之家摩托 | autohome.com.cn/moto | 车型库、媒体内容 |
+
+### 赛事/展会
+
+| 赛事/组织 | 网址 | 参考价值 |
+|---|---|---|
+| 中国摩托车商会 | chinamotorcycle.com | 行业数据、政策 |
+| 中国摩博会 CIMA Motor | cimamotor.com | 展会资讯、行业活动 |
+| CSBK 中国超级摩托车锦标赛 | 各赛季媒体合作报道 | 赛事资讯 |
+| 泛珠三角超级赛道节 | 泛珠官方渠道 | 民间赛事参考 |
+
+### 厂商官网
+
+| 品牌 | 网址 |
+|---|---|
+| 春风动力 | cfmoto.com |
+| 钱江/赛科龙 | qjmotor.com |
+| 隆鑫/无极 | loncin.com |
+| 宗申 | zongshen.com |
+| 豪爵 | haojue.com |
+| 奔达 | benda.com |
+| 凯越 | kayole.com |
+| 张雪机车 | zxmoto.com / 张雪机车小程序 |
+
+### 海外
+
+| 网站 | 网址 | 参考价值 |
+|---|---|---|
+| ADVrider | advrider.com | 海外骑行游记社区 |
+| RevZilla | revzilla.com | 摩托车配件零售 + 内容媒体 |
+
+---
+
+*文档版本：2026-04-02 | 由 AI 助手六百整理*

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { PublicArticle, PublicCategory, formatArticleDate } from "@/lib/public-data";
 
 type ArticleCardProps = {
@@ -39,56 +40,67 @@ export function ArticleCard({ article, category, variant = "grid" }: ArticleCard
 
   if (variant === "compact") {
     return (
-      <article className="card rounded-2xl p-4">
+      <Link href={`/articles/${article.slug}`} className="card rounded-2xl p-4 hover:shadow-card transition cursor-pointer block">
         <div className="flex items-start gap-4">
-          <div
-            className="flex h-20 w-20 shrink-0 items-end rounded-xl p-3 text-white"
-            style={{ background: gradient }}
-          >
-            {category && (
-              <span className="text-[10px] font-semibold tracking-wide opacity-80">
-                {category.name.slice(0, 4)}
-              </span>
-            )}
-          </div>
+          {article.coverImage ? (
+            <div className="relative h-20 w-20 rounded-xl overflow-hidden shrink-0">
+              <Image
+                src={article.coverImage}
+                alt={article.title}
+                fill
+                className="object-cover"
+                sizes="80px"
+                unoptimized
+              />
+            </div>
+          ) : (
+            <div
+              className="flex h-20 w-20 shrink-0 items-end rounded-xl p-3"
+              style={{ background: gradient }}
+            >
+              {category && (
+                <span className="text-[10px] font-semibold tracking-wide opacity-80 text-white">
+                  {category.name.slice(0, 4)}
+                </span>
+              )}
+            </div>
+          )}
           <div className="min-w-0 flex-1">
             <CategoryBadge category={category} />
-            <Link href={`/articles/${article.slug}`} className="mt-2 block">
-              <h3 className="text-sm font-semibold leading-5 text-[#1A1A2E] line-clamp-2 hover:text-[#FF6B35] transition-colors">
-                {article.title}
-              </h3>
-            </Link>
+            <h3 className="mt-2 text-sm font-semibold leading-5 text-[#1A1A2E] line-clamp-2 hover:text-[#FF6B35] transition-colors">
+              {article.title}
+            </h3>
             <p className="mt-1.5 text-xs text-[#9CA3AF]">
               {formatArticleDate(article.publishedAt)} · {article.metrics.views} 阅读
             </p>
           </div>
         </div>
-      </article>
+      </Link>
     );
   }
 
   if (variant === "list") {
     return (
-      <article className="card rounded-2xl p-5">
+      <Link href={`/articles/${article.slug}`} className="card rounded-2xl p-5 hover:shadow-card transition cursor-pointer block">
         <div className="grid gap-5 md:grid-cols-[200px_minmax(0,1fr)] items-center">
-          {/* Image/gradient block */}
-          <div
-            className="relative min-h-[160px] rounded-xl p-5 text-white overflow-hidden"
-            style={{ background: gradient }}
-          >
-            {article.coverImage && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
+          {/* Image block */}
+          <div className="relative h-[160px] rounded-xl overflow-hidden" style={{ background: gradient }}>
+            {article.coverImage ? (
+              <Image
                 src={article.coverImage}
                 alt={article.title}
-                className="absolute inset-0 w-full h-full object-cover opacity-50"
+                fill
+                className="object-cover"
+                sizes="200px"
+                unoptimized
               />
-            )}
-            <div className="relative z-10 flex items-start justify-between">
-              <span className="rounded-full bg-white/25 px-2.5 py-0.5 text-[11px] font-semibold">
+            ) : null}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent z-10" />
+            <div className="absolute bottom-3 left-3 z-20 flex items-center gap-2">
+              <span className="rounded-full bg-white/25 px-2.5 py-0.5 text-[11px] font-semibold text-white">
                 {article.metrics.views} 阅读
               </span>
-              <span className="rounded-full bg-white/25 px-2.5 py-0.5 text-[11px] font-semibold">
+              <span className="rounded-full bg-white/25 px-2.5 py-0.5 text-[11px] font-semibold text-white">
                 {article.readMinutes} min
               </span>
             </div>
@@ -100,51 +112,49 @@ export function ArticleCard({ article, category, variant = "grid" }: ArticleCard
               <CategoryBadge category={category} />
               <span>{formatArticleDate(article.publishedAt)}</span>
             </div>
-            <Link href={`/articles/${article.slug}`} className="block">
-              <h3 className="text-xl font-semibold leading-7 text-[#1A1A2E] line-clamp-2 hover:text-[#FF6B35] transition-colors">
-                {article.title}
-              </h3>
-            </Link>
+            <h3 className="text-xl font-semibold leading-7 text-[#1A1A2E] line-clamp-2 hover:text-[#FF6B35] transition-colors">
+              {article.title}
+            </h3>
             <p className="mt-2 text-sm leading-6 text-[#6B7280] line-clamp-2">{article.summary}</p>
             <div className="mt-4 flex items-center justify-between gap-3">
               <span className="text-sm text-[#9CA3AF]">{article.author}</span>
-              <Link
-                href={`/articles/${article.slug}`}
-                className="rounded-full bg-[#FF6B35]/10 px-4 py-1.5 text-sm font-medium text-[#FF6B35] transition-colors hover:bg-[#FF6B35] hover:text-white"
-              >
+              <span className="rounded-full bg-[#FF6B35]/10 px-4 py-1.5 text-sm font-medium text-[#FF6B35]">
                 阅读全文
-              </Link>
+              </span>
             </div>
           </div>
         </div>
-      </article>
+      </Link>
     );
   }
 
   // grid variant (default)
   return (
-    <article className="card rounded-2xl p-5">
+    <Link href={`/articles/${article.slug}`} className="card rounded-2xl p-5 hover:shadow-card transition cursor-pointer block">
       {/* Color header bar */}
-      <div
-        className="relative min-h-[160px] rounded-xl p-5 text-white overflow-hidden"
-        style={{ background: gradient }}
-      >
-        {article.coverImage && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+      <div className="relative h-[160px] rounded-xl overflow-hidden" style={{ background: gradient }}>
+        {article.coverImage ? (
+          <Image
             src={article.coverImage}
             alt={article.title}
-            className="absolute inset-0 w-full h-full object-cover rounded-xl"
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 400px"
+            unoptimized
           />
-        )}
-        <div className="relative z-10 flex items-start justify-between">
+        ) : null}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent z-10" />
+        <div className="absolute top-3 left-3 z-20">
           <span
-            className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider"
-            style={{ backgroundColor: 'rgba(255,255,255,0.25)', color: '#fff' }}
+            className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-white"
+            style={{ backgroundColor: 'rgba(255,255,255,0.25)', backdropFilter: 'blur(4px)' }}
           >
             {category ? category.name : article.category}
           </span>
-          <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-[11px] font-medium text-white/90">
+        </div>
+        <div className="absolute bottom-3 right-3 z-20">
+          <span className="rounded-full px-2.5 py-0.5 text-[11px] font-medium text-white/90"
+            style={{ backgroundColor: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(4px)' }}>
             {formatArticleDate(article.publishedAt)}
           </span>
         </div>
@@ -152,17 +162,15 @@ export function ArticleCard({ article, category, variant = "grid" }: ArticleCard
 
       <div className="mt-4">
         <CategoryBadge category={category} />
-        <Link href={`/articles/${article.slug}`} className="mt-3 block">
-          <h3 className="text-lg font-semibold leading-6 text-[#1A1A2E] line-clamp-2 hover:text-[#FF6B35] transition-colors">
-            {article.title}
-          </h3>
-        </Link>
+        <h3 className="mt-3 text-lg font-semibold leading-6 text-[#1A1A2E] line-clamp-2 hover:text-[#FF6B35] transition-colors">
+          {article.title}
+        </h3>
         <p className="mt-2.5 text-sm leading-6 text-[#6B7280] line-clamp-2">{article.summary}</p>
         <div className="mt-4 flex items-center justify-between gap-3 text-xs text-[#9CA3AF]">
           <span>{article.author}</span>
           <span>{article.metrics.views} 阅读 · {article.readMinutes} 分钟</span>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }

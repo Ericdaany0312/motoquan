@@ -9,13 +9,10 @@ export function SiteFooter() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <img src="/logo.svg" alt="摩托圈" className="h-8 w-auto" />
+              <img src="/motoquan-logo.png" alt="摩托圈" className="h-[120px] w-auto" />
             </div>
             <p className="text-sm leading-6 text-[#6B7280] max-w-xs">
               面向摩托产业从业者与高频骑士的内容平台。聚焦新车发布、行业快讯、技术工程、装备指南与改装工场。
-            </p>
-            <p className="mt-4 text-xs text-[#9CA3AF]">
-              样例内容用于展示视觉与信息架构方向
             </p>
           </div>
 

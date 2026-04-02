@@ -14,6 +14,11 @@ import {
   PublicArticle,
   PublicCategory,
 } from '@/lib/public-data';
+import {
+  getArticleAction,
+  toggleLike,
+  toggleFavorite,
+} from '@/lib/user-data';
 
 export default function ArticleDetailPage({ params }: { params: { slug: string } }) {
   const [article, setArticle] = useState<PublicArticle | null>(null);
@@ -21,6 +26,8 @@ export default function ArticleDetailPage({ params }: { params: { slug: string }
   const [categories, setCategories] = useState<PublicCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [categoryColor, setCategoryColor] = useState('#0A84FF');
+  const [liked, setLiked] = useState(false);
+  const [favorited, setFavorited] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -35,6 +42,9 @@ export default function ArticleDetailPage({ params }: { params: { slug: string }
       if (art) {
         const cat = cats.find((c) => c.name === art.category);
         if (cat) setCategoryColor(cat.color);
+        const action = getArticleAction(art.id);
+        setLiked(action.liked);
+        setFavorited(action.favorited);
       }
       setLoading(false);
     }
@@ -120,16 +130,34 @@ export default function ArticleDetailPage({ params }: { params: { slug: string }
                 <p className="text-base leading-8 text-heading">{article.summary}</p>
               </div>
               <div className="rounded-[26px] bg-[#FF6B35]/5 p-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#FF6B35] mb-2">Share</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#FF6B35] mb-2">互动</p>
                 <div className="flex flex-wrap gap-2">
-                  {['微信', '微博', '收藏'].map((item) => (
-                    <button
-                      key={item}
-                      className="rounded-full bg-[#FF6B35] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#ff7b4d]"
-                    >
-                      {item}
-                    </button>
-                  ))}
+                  <button
+                    onClick={() => {
+                      const newVal = toggleLike(article.id);
+                      setLiked(newVal);
+                    }}
+                    className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                      liked
+                        ? 'bg-red-500 text-white hover:bg-red-600'
+                        : 'bg-[#FF6B35] text-white hover:bg-[#ff7b4d]'
+                    }`}
+                  >
+                    {liked ? '❤️ 已赞' : '🤍 赞'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      const newVal = toggleFavorite(article.id);
+                      setFavorited(newVal);
+                    }}
+                    className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                      favorited
+                        ? 'bg-yellow-500 text-white hover:bg-yellow-600'
+                        : 'bg-[#FF6B35] text-white hover:bg-[#ff7b4d]'
+                    }`}
+                  >
+                    {favorited ? '⭐ 已收藏' : '☆ 收藏'}
+                  </button>
                 </div>
               </div>
             </div>

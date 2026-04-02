@@ -19,6 +19,7 @@ export interface Article {
   metrics: { views: string; comments: number };
   sourceId?: string;
   originalUrl?: string;
+  reviewNotes?: string;
 }
 
 export interface Category {
@@ -127,8 +128,9 @@ export async function getArticlesAPI(): Promise<Article[]> {
   // Fetch all articles including drafts for admin
   const res = await fetch('/api/articles?status=all&limit=100');
   if (!res.ok) throw new Error('Failed to fetch articles');
-  const data = await res.json();
-  return data.map((a: any) => ({
+  const json = await res.json();
+  const list = Array.isArray(json) ? json : (json.data || []);
+  return list.map((a: any) => ({
     id: a.id,
     title: a.title,
     slug: a.slug,
@@ -142,6 +144,7 @@ export async function getArticlesAPI(): Promise<Article[]> {
     author: a.author,
     publishedAt: a.published_at,
     readMinutes: a.read_minutes || 5,
+    reviewNotes: a.review_notes,
     metrics: { views: a.views || '0', comments: a.comments_count || 0 },
   }));
 }
@@ -164,6 +167,7 @@ export async function getArticleByIdAPI(id: string): Promise<Article | null> {
     author: a.author,
     publishedAt: a.published_at,
     readMinutes: a.read_minutes || 5,
+    reviewNotes: a.review_notes,
     metrics: { views: a.views || '0', comments: a.comments_count || 0 },
   };
 }
@@ -190,6 +194,7 @@ export async function saveArticleAPI(article: Omit<Article, 'id'>): Promise<Arti
     author: a.author,
     publishedAt: a.published_at,
     readMinutes: a.read_minutes || 5,
+    reviewNotes: a.review_notes,
     metrics: { views: '0', comments: 0 },
   };
 }
@@ -216,6 +221,7 @@ export async function updateArticleAPI(id: string, updates: Partial<Article>): P
     author: a.author,
     publishedAt: a.published_at,
     readMinutes: a.read_minutes || 5,
+    reviewNotes: a.review_notes,
     metrics: { views: a.views || '0', comments: a.comments_count || 0 },
   };
 }
@@ -223,6 +229,20 @@ export async function updateArticleAPI(id: string, updates: Partial<Article>): P
 export async function deleteArticleAPI(id: string): Promise<void> {
   const res = await fetch(`/api/articles/${id}`, { method: 'DELETE' });
   if (!res.ok) throw new Error('Failed to delete article');
+}
+
+export async function reviewArticleAPI(
+  id: string,
+  action: 'approve' | 'reject',
+  reviewNotes?: string
+): Promise<{ status: 'published' | 'draft'; reviewNotes?: string }> {
+  const res = await fetch(`/api/articles/${id}/review`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action, reviewNotes }),
+  });
+  if (!res.ok) throw new Error('Failed to review article');
+  return res.json();
 }
 
 // Hooks

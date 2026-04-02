@@ -2,6 +2,8 @@ import Link from "next/link";
 import { ArticleCard } from "@/components/article-card";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { HomeCTA } from "@/components/home-cta";
+import { SupplierShowcaseLoginCTA } from "@/components/supplier-showcase";
 import {
   getPublishedArticles,
   getFeaturedArticle,
@@ -183,6 +185,51 @@ export default async function HomePage() {
             </div>
           )}
         </section>
+
+        {/* ── Supplier Showcase ─────────────────── */}
+        <section className="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8">
+          <div className="bg-gradient-to-br from-[#1A1A2E] to-[#2d2d5a] rounded-[32px] p-8 sm:p-12 text-white relative overflow-hidden">
+            {/* decorative circles */}
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-[#FF6B35]/10 -translate-y-1/2 translate-x-1/4" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-[#0A84FF]/10 translate-y-1/2 -translate-x-1/4" />
+            <div className="relative z-10">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-10">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-[#FF6B35] mb-2">Directory</p>
+                  <h2 className="text-3xl font-bold">供应商黄页</h2>
+                  <p className="mt-2 text-white/60 text-sm max-w-md">汇集摩托车配件、维修、整车经销商——找货、找店、找合作，一个平台全搞定</p>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Link
+                    href="/businesses"
+                    className="px-6 py-3 bg-[#FF6B35] hover:bg-[#e8551a] text-white font-semibold rounded-full transition text-sm text-center"
+                  >
+                    查看全部供应商 →
+                  </Link>
+                  <SupplierShowcaseLoginCTA />
+                </div>
+              </div>
+              {/* Value props */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                {[
+                  { icon: '🔧', title: '配件采购', desc: '刹车片·链条·轮胎·油品' },
+                  { icon: '🏪', title: '维修保养', desc: '正规门店·品质保障' },
+                  { icon: '🚗', title: '新车整车', desc: '授权经销商·官方价格' },
+                  { icon: '🤝', title: '商务合作', desc: '批量采购·OEM代工' },
+                ].map((item) => (
+                  <div key={item.title} className="bg-white/8 backdrop-blur-sm rounded-2xl p-4 border border-white/10">
+                    <div className="text-2xl mb-2">{item.icon}</div>
+                    <h3 className="font-semibold text-sm">{item.title}</h3>
+                    <p className="text-white/50 text-xs mt-1 leading-relaxed">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Why Register ─────────────────────── */}
+        <HomeCTA />
       </main>
 
       <SiteFooter />

@@ -83,8 +83,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const navItems = [
     { href: '/admin', label: '数据看板', icon: '📊' },
+    { href: '/admin/reviews', label: '内容审核', icon: '✅' },
     { href: '/admin/articles', label: '文章管理', icon: '📝' },
     { href: '/admin/categories', label: '分类管理', icon: '🏷️' },
+    { href: '/admin/users', label: '用户管理', icon: '👥' },
+    { href: '/admin/businesses', label: '商务信息', icon: '🏢' },
   ];
 
   const pathname = typeof window !== 'undefined' ? window.location.pathname : '';
@@ -92,7 +95,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
-      <aside className="w-56 bg-white border-r border-line flex flex-col">
+      <aside className="w-56 bg-white border-r border-line flex flex-col sticky top-0 h-screen overflow-y-auto">
         <div className="px-5 py-6 border-b border-line">
           <Link href="/" className="flex items-center gap-2">
             <span className="text-2xl">🏍️</span>
