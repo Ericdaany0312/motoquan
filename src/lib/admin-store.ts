@@ -70,7 +70,9 @@ export function getAuthStatus() {
 }
 
 export function login(email: string, password: string): boolean {
-  if (email === 'admin@motoquan.com' && password === 'motoquan2026') {
+  const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'admin@motoquan.com';
+  const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'motoquan2026';
+  if (email === adminEmail && password === adminPassword) {
     localStorage.setItem('motoquan_admin_auth', 'motoquan_logged_in');
     return true;
   }

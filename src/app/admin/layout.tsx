@@ -53,7 +53,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <input
                 name="email"
                 type="email"
-                defaultValue="admin@motoquan.com"
+                placeholder="admin@motoquan.com"
                 className="w-full px-4 py-2.5 border border-line rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
               />
             </div>
@@ -62,7 +62,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <input
                 name="password"
                 type="password"
-                defaultValue="motoquan2026"
+                placeholder="输入密码"
                 className="w-full px-4 py-2.5 border border-line rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
               />
             </div>
