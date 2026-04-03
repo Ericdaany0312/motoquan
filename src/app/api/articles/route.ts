@@ -11,8 +11,8 @@ export async function GET(request: NextRequest) {
   const featured = searchParams.get('featured');
   const count = searchParams.get('count') === 'true';
 
-  // 先单独查总数（head:true 只返回 count  metadata，不查数据）
-  let countQuery = supabase.from('articles').select('id', { count: 'exact', head: true });
+  // 先单独查总数（不用 head:true，直接查 id 列，Supabase 对某些版本 count 有 bug）
+  let countQuery = supabase.from('articles').select('id');
   if (status && status !== 'all') countQuery = countQuery.eq('status', status);
   if (category && category !== '全部') countQuery = countQuery.eq('category', category);
   const { count: totalCount } = await countQuery;
@@ -43,12 +43,18 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  // totalCount 为 0 时用 data 长度替代（应对 Supabase count bug）
+  const effectiveTotal = (totalCount === null || totalCount === undefined) ? (data?.length ?? 0) : totalCount;
+  const actualHasMore = totalCount !== null && totalCount !== undefined
+    ? totalCount > page * limit
+    : (data?.length ?? 0) >= limit;
+
   return NextResponse.json({
     data: data || [],
-    total: totalCount ?? (data?.length ?? 0),
+    total: effectiveTotal,
     page,
     limit,
-    hasMore: (totalCount ?? 0) > page * limit,
+    hasMore: actualHasMore,
   });
 }
 
