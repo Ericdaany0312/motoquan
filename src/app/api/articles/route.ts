@@ -9,7 +9,6 @@ export async function GET(request: NextRequest) {
   const page = parseInt(searchParams.get('page') || '1');
   const offset = (page - 1) * limit;
   const featured = searchParams.get('featured');
-  const count = searchParams.get('count') === 'true';
 
   // 取分页数据，同时拿 count
   let query = supabase
@@ -37,11 +36,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // DEBUG
-  console.log('DEBUG count:', totalCount, 'data len:', data?.length);
-
   // totalCount 为 0 时用 data 长度替代（应对 Supabase count bug）
-  const effectiveTotal = (totalCount === null || totalCount === undefined) ? (data?.length ?? 0) : (totalCount === 0 ? (data?.length ?? 0) : totalCount);
+  const effectiveTotal = (totalCount === null || totalCount === undefined ? (data?.length ?? 0) : totalCount === 0 ? (data?.length ?? 0) : totalCount);
   const actualHasMore = effectiveTotal > page * limit;
 
   return NextResponse.json({
@@ -50,6 +46,7 @@ export async function GET(request: NextRequest) {
     page,
     limit,
     hasMore: actualHasMore,
+    _debug: { rawCount: totalCount, dataLen: data?.length },
   });
 }
 
