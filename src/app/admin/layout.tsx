@@ -1,86 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { login, logout } from '@/lib/admin-store';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-  const [checking, setChecking] = useState(true);
-
-  useEffect(() => {
-    // Check auth on mount and on every render
-    const authed = localStorage.getItem('motoquan_admin_auth') === 'motoquan_logged_in';
-    setChecking(false);
-    if (!authed) {
-      // Show login inline
-    }
-  }, []);
-
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const email = (form.elements.namedItem('email') as HTMLInputElement).value;
-    const password = (form.elements.namedItem('password') as HTMLInputElement).value;
-    if (login(email, password)) {
-      router.refresh();
-    } else {
-      alert('邮箱或密码错误');
-    }
-  };
-
-  const handleLogout = () => {
-    logout();
-    router.refresh();
-  };
-
-  const authed = typeof window !== 'undefined' && localStorage.getItem('motoquan_admin_auth') === 'motoquan_logged_in';
-
-  if (checking) return null;
-
-  if (!authed) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-card p-8 w-full max-w-sm">
-          <div className="text-center mb-8">
-            <div className="text-4xl mb-3">🏍️</div>
-            <h1 className="text-xl font-bold text-heading">摩托圈管理后台</h1>
-          </div>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-body mb-1.5">管理员邮箱</label>
-              <input
-                name="email"
-                type="email"
-                placeholder="admin@motoquan.com"
-                className="w-full px-4 py-2.5 border border-line rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-body mb-1.5">密码</label>
-              <input
-                name="password"
-                type="password"
-                placeholder="输入密码"
-                className="w-full px-4 py-2.5 border border-line rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
-              />
-            </div>
-            <button
-              type="submit"
-              className="w-full py-2.5 bg-primary text-white rounded-xl font-medium hover:bg-primary/90 transition"
-            >
-              登录
-            </button>
-          </form>
-          <p className="text-center text-xs text-body mt-4">
-            <Link href="/" className="text-primary hover:underline">← 返回前台</Link>
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   const navItems = [
     { href: '/admin', label: '数据看板', icon: '📊' },
     { href: '/admin/reviews', label: '内容审核', icon: '✅' },
@@ -122,7 +44,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             );
           })}
         </nav>
-        <div className="px-3 py-4 border-t border-line space-y-1">
+        <div className="px-3 py-4 border-t border-line">
           <Link
             href="/"
             className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-body hover:bg-gray-100 transition"
@@ -130,13 +52,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <span>🌐</span>
             返回前台
           </Link>
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-500 hover:bg-red-50 transition"
-          >
-            <span>🚪</span>
-            退出登录
-          </button>
         </div>
       </aside>
 

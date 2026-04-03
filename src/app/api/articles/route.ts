@@ -11,9 +11,16 @@ export async function GET(request: NextRequest) {
   const featured = searchParams.get('featured');
   const count = searchParams.get('count') === 'true';
 
+  // 先单独查总数（count: 'exact' 配合筛选条件时不准确）
+  let countQuery = supabase.from('articles').select('id', { count: 'exact', head: true });
+  if (status && status !== 'all') countQuery = countQuery.eq('status', status);
+  if (category && category !== '全部') countQuery = countQuery.eq('category', category);
+  const { count: totalCount } = await countQuery;
+
+  // 再取分页数据
   let query = supabase
     .from('articles')
-    .select(count ? 'id' : '*', count ? { count: 'exact' } : undefined)
+    .select('*')
     .order('published_at', { ascending: false })
     .limit(limit)
     .range(offset, offset + limit - 1);
@@ -30,7 +37,7 @@ export async function GET(request: NextRequest) {
     query = query.eq('featured', true).limit(1);
   }
 
-  const { data, error, count: totalCount } = await query;
+  const { data, error } = await query;
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
