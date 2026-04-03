@@ -11,16 +11,10 @@ export async function GET(request: NextRequest) {
   const featured = searchParams.get('featured');
   const count = searchParams.get('count') === 'true';
 
-  // 先单独查总数（不用 head:true，直接查 id 列，Supabase 对某些版本 count 有 bug）
-  let countQuery = supabase.from('articles').select('id');
-  if (status && status !== 'all') countQuery = countQuery.eq('status', status);
-  if (category && category !== '全部') countQuery = countQuery.eq('category', category);
-  const { count: totalCount } = await countQuery;
-
-  // 再取分页数据
+  // 取分页数据，同时拿 count
   let query = supabase
     .from('articles')
-    .select('*')
+    .select('*', { count: 'exact' })
     .order('published_at', { ascending: false })
     .limit(limit)
     .range(offset, offset + limit - 1);
@@ -37,17 +31,15 @@ export async function GET(request: NextRequest) {
     query = query.eq('featured', true).limit(1);
   }
 
-  const { data, error } = await query;
+  const { data, error, count: totalCount } = await query;
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
   // totalCount 为 0 时用 data 长度替代（应对 Supabase count bug）
-  const effectiveTotal = (totalCount === null || totalCount === undefined) ? (data?.length ?? 0) : totalCount;
-  const actualHasMore = totalCount !== null && totalCount !== undefined
-    ? totalCount > page * limit
-    : (data?.length ?? 0) >= limit;
+  const effectiveTotal = (totalCount === null || totalCount === undefined) ? (data?.length ?? 0) : (totalCount === 0 ? (data?.length ?? 0) : totalCount);
+  const actualHasMore = effectiveTotal > page * limit;
 
   return NextResponse.json({
     data: data || [],
