@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
   const featured = searchParams.get('featured');
   const count = searchParams.get('count') === 'true';
 
-  // 先单独查总数（count: 'exact' 配合筛选条件时不准确）
+  // 先单独查总数（head:true 只返回 count  metadata，不查数据）
   let countQuery = supabase.from('articles').select('id', { count: 'exact', head: true });
   if (status && status !== 'all') countQuery = countQuery.eq('status', status);
   if (category && category !== '全部') countQuery = countQuery.eq('category', category);
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.json({
     data: data || [],
-    total: totalCount ?? 0,
+    total: totalCount ?? (data?.length ?? 0),
     page,
     limit,
     hasMore: (totalCount ?? 0) > page * limit,
