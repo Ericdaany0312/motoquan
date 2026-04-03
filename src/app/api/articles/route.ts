@@ -46,7 +46,6 @@ export async function GET(request: NextRequest) {
     page,
     limit,
     hasMore: actualHasMore,
-    _DEBUG_V2: { rawCount: totalCount, dataLen: data?.length, ts: Date.now() },
   });
 }
 
