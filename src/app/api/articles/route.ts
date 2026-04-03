@@ -37,6 +37,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  // DEBUG
+  console.log('DEBUG count:', totalCount, 'data len:', data?.length);
+
   // totalCount 为 0 时用 data 长度替代（应对 Supabase count bug）
   const effectiveTotal = (totalCount === null || totalCount === undefined) ? (data?.length ?? 0) : (totalCount === 0 ? (data?.length ?? 0) : totalCount);
   const actualHasMore = effectiveTotal > page * limit;
