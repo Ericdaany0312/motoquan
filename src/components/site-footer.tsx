@@ -43,9 +43,7 @@ export function SiteFooter() {
               <Link href="/articles" className="block transition-colors hover:text-[#FF6B35]">
                 全部文章
               </Link>
-              <Link href="/admin" className="block transition-colors hover:text-[#FF6B35]">
-                管理后台
-              </Link>
+
             </div>
           </div>
         </div>

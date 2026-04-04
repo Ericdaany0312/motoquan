@@ -140,12 +140,7 @@ export default async function HomePage() {
             <div className="card rounded-2xl p-20 text-center">
               <div className="text-5xl mb-4">🏍️</div>
               <p className="text-lg text-[#6B7280]">暂无精选文章</p>
-              <Link
-                href="/admin/articles/new"
-                className="mt-4 text-sm text-[#FF6B35] hover:underline inline-block"
-              >
-                去后台发布第一篇 →
-              </Link>
+  
             </div>
           )}
         </section>
@@ -176,12 +171,6 @@ export default async function HomePage() {
             <div className="card rounded-2xl py-16 text-center">
               <div className="text-4xl mb-4">📰</div>
               <p className="text-[#6B7280]">暂无文章</p>
-              <Link
-                href="/admin/articles/new"
-                className="mt-3 text-sm text-[#FF6B35] hover:underline inline-block"
-              >
-                去后台发布 →
-              </Link>
             </div>
           )}
         </section>
