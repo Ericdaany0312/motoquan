@@ -73,9 +73,15 @@ export default function AdminArticlesPage() {
     );
   };
 
+  // Per-category article counts
+  const categoryCounts = categories.map((cat) => ({
+    ...cat,
+    count: articles.filter((a) => a.category === cat.name).length,
+  }));
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-5">
         <div>
           <h1 className="text-2xl font-bold text-heading">文章管理</h1>
           <p className="text-body mt-1">
@@ -91,6 +97,24 @@ export default function AdminArticlesPage() {
         >
           ✏️ 写新文章
         </Link>
+      </div>
+
+      {/* Category stats row */}
+      <div className="bg-white rounded-2xl shadow-card p-5 mb-6">
+        <div className="flex items-center gap-2 overflow-x-auto">
+          <span className="text-xs font-medium text-body shrink-0">栏目统计</span>
+          {categoryCounts.map((cat) => (
+            <div
+              key={cat.id}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium shrink-0 cursor-pointer transition hover:opacity-80"
+              style={{ backgroundColor: cat.color + '20', color: cat.color }}
+              onClick={() => setFilterCategory(filterCategory === cat.name ? 'all' : cat.name)}
+            >
+              {cat.icon} {cat.name}
+              <span className="ml-0.5 bg-white/50 rounded-full px-1.5 py-0.5 font-bold">{cat.count}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Filters */}

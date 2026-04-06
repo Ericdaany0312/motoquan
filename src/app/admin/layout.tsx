@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { href: '/admin', label: '数据看板', icon: '📊' },
   { href: '/admin/reviews', label: '内容审核', icon: '✅' },
   { href: '/admin/articles', label: '文章管理', icon: '📝' },
+  { href: '/admin/models', label: '车型管理', icon: '🏍️' },
   { href: '/admin/categories', label: '分类管理', icon: '🏷️' },
   { href: '/admin/users', label: '用户管理', icon: '👥' },
   { href: '/admin/businesses', label: '商务信息', icon: '🏢' },
