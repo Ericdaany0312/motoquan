@@ -176,3 +176,75 @@ export async function getBusinessCount(): Promise<number> {
   const data = await res.json();
   return Array.isArray(data) ? data.length : 0;
 }
+
+// ─── Bike Models ──────────────────────────────────────────────
+
+export interface PublicBrand {
+  id: string;
+  name: string;
+  slug: string;
+  country?: string;
+}
+
+export interface PublicModel {
+  id: string;
+  brand_id?: string;
+  name: string;
+  slug: string;
+  category?: string;
+  displacement?: number;
+  power?: string;
+  torque?: string;
+  weight?: string;
+  seat_height?: number;
+  fuel_capacity?: number;
+  top_speed?: number;
+  price?: string;
+  launch_date?: string;
+  main_image?: string;
+  highlights?: string[];
+  is_hot?: boolean;
+  is_new?: boolean;
+  brand?: PublicBrand;
+}
+
+// Fetch all active brands
+export async function getPublicBrands(): Promise<PublicBrand[]> {
+  const url = `${BASE_URL}/rest/v1/brand_master?select=id,name,slug,country&is_active=eq.true&order=name.asc`;
+  const res = await fetch(url, { headers });
+  if (!res.ok) return [];
+  const data = await res.json();
+  return data;
+}
+
+// Fetch models with pagination and filters
+export async function getPublicModels(
+  brandSlug?: string,
+  category?: string,
+  page = 1,
+  limit = 20
+): Promise<{ models: PublicModel[]; total: number }> {
+  const offset = (page - 1) * limit;
+  let url = `${BASE_URL}/rest/v1/bike_model_master?select=*&is_active=eq.true&order=is_hot.desc,is_new.desc&limit=${limit}&offset=${offset}`;
+
+  const countUrl = `${BASE_URL}/rest/v1/bike_model_master?select=id&is_active=eq.true`;
+
+  const res = await fetch(url, { headers });
+  const countRes = await fetch(countUrl, { headers });
+  const data = await res.json();
+  const countData = await countRes.json();
+
+  return {
+    models: Array.isArray(data) ? data : [],
+    total: Array.isArray(countData) ? countData.length : 0,
+  };
+}
+
+// Fetch single model by id
+export async function getModelById(id: string): Promise<PublicModel | null> {
+  const url = `${BASE_URL}/rest/v1/bike_model_master?select=*,brand:brand_master(id,name,slug,country)&id=eq.${encodeURIComponent(id)}&is_active=eq.true`;
+  const res = await fetch(url, { headers });
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data.length > 0 ? data[0] : null;
+}
