@@ -283,6 +283,227 @@ export const articles: Article[] = [
       "边箱适合放低频但形态固定的装备，尾包适合雨具和工具包，临时电源和充气泵则应该放在停车后几秒内就能拿到的位置。只有把取用顺序设计清楚，装载系统才算真正成立。",
       "如果路线里包含连续弯道或非铺装路段，更要避免后部负载过重，因为那会直接影响疲劳和车辆稳定性。"
     ]
+  },
+  {
+    slug: "zxmoto-wsbk-championship-double-win",
+    title: "张雪机车WSBK双冠：2年品牌如何打破欧美日37年垄断",
+    category: "行业快讯",
+    summary:
+      "2026年3月WSBK葡萄牙站，张雪机车在WorldSSP中量级组别背靠背双冠，以领先近4秒的绝对优势打破欧美日品牌垄断，创造中国摩托历史。",
+    deck: "历史性时刻",
+    coverLabel: "WSBK CHAMPION",
+    author: "李潇",
+    publishedAt: "2026-04-05",
+    readMinutes: 7,
+    featured: true,
+    coverPalette: { from: "#FF6B35", to: "#FFD700" },
+    metrics: { views: "12.4k", comments: 89 },
+    keyPoints: ["中国品牌首夺WSBK WorldSSP组别冠军", "820RR-RS零百加速2.81秒，100%自研三电", "订单已超1万台，门店爆单到5-6月"],
+    paragraphs: [
+      "2026年3月28日至29日，世界超级摩托车锦标赛（WSBK）葡萄牙站波尔蒂芒赛道传来捷报——成立仅两年的中国品牌张雪机车（ZXMOTO），在WorldSSP中量级组别实现背靠背双冠，以领先第二名近4秒的绝对优势打破欧美日品牌对该组别长达37年的垄断。这是中国摩托品牌首次登顶WSBK组别领奖台最高位置。",
+      "参赛车型为张雪820RR-RS，搭载819cc直列三缸发动机，零百加速仅2.81秒，发动机、车架、电控实现100%国产自研。创始人张雪1987年生于湖南山村，14岁当修车学徒，26岁揣2万元赴重庆创业，2024年创立张雪机车，2025年产值已达7.5亿元。",
+      "WSBK夺冠后全国门店爆单，截至2026年4月初，两款在售车型全国总订单已突破1万台，多款热门车型订单排至5至6月。行业认为，张雪机车证明了国产大排量发动机自主研发能力已获国际认可，是中国摩托车从性价比向技术领先跃迁的标志性事件。"
+    ]
+  },
+  {
+    slug: "cfmoto-2026-spring-day-racing-for-you",
+    title: "CFMOTO 2026春风日：500SR最强原厂车发布，V4引擎跻身世界一线",
+    category: "新车发布",
+    summary:
+      "2026春风日CFMOTO发布500SR仿赛，号称最强原厂车；V4 SR-RR公升级超跑正式亮相，157kW动力、整备质量低于200kg，标志中国超级跑车正式跻身世界第一梯队。",
+    deck: "中国动力运动",
+    coverLabel: "CFMOTO SPRING DAY",
+    author: "张策",
+    publishedAt: "2026-04-04",
+    readMinutes: 6,
+    coverPalette: { from: "#0A84FF", to: "#66B8FF" },
+    metrics: { views: "7.2k", comments: 56 },
+    keyPoints: ["500SR素车天马赛道圈速1分08秒", "V4 SR-RR 157kW/210匹+极速300+", "2025年前三季度营收148.96亿元同比+30%"],
+    paragraphs: [
+      "2026春风日活动上，CFMOTO正式发布运动仿赛500SR，搭载企业自主研发水冷直列四缸发动机，最大功率61kW，天马赛道素车圈速1分08秒，号称最强原厂车。同时CFMOTO V4 SR-RR国内动态首秀，997cc V4引擎，整备质量低于200kg，马力推重比达国际一线高性能超跑水准，标志中国超级跑车正式跻身世界第一梯队。",
+      "2025年前三季度CFMOTO营业收入148.96亿元，同比增长30.10%；净利润14.15亿元，同比增长30.89%。全球7000+经销商，覆盖100+国家。赛事方面，2024赛季斩获Moto3车手、车队、制造商三项世界冠军，2025年拓展至Moto2赛事，赛事技术反哺量产车型的自研水冷直列四缸发动机已应用于500SR。",
+      "亚摩联A级赛道成都天府国际赛道也在本次春风日活动中亮相，300名骑手巡游，700+车友现场体验。同时宣布CFMOTO Racing天才计划升级，9-12岁小车手选拔启动。"
+    ]
+  },
+  {
+    slug: "cfmoto-v4-sr-rr-milan-moto-show",
+    title: "V4 SR与公升MT双旗舰并场！CFMOTO新车亮相米兰车展",
+    category: "新车发布",
+    summary:
+      "CFMOTO携V4 SR-RR超级跑车和1000MT-X亮相米兰国际车展，V4引擎157kW极速300+，计划量产500辆以上冲击WSBK。",
+    deck: "米兰车展",
+    coverLabel: "EICMA MILAN",
+    author: "张策",
+    publishedAt: "2026-03-30",
+    readMinutes: 5,
+    coverPalette: { from: "#0A84FF", to: "#3B82F6" },
+    metrics: { views: "5.8k", comments: 43 },
+    keyPoints: ["V4 SR-RR 157kW计划量产500辆冲击WSBK", "1000MT-X 946cc双缸199kg干重", "GP版花675NK（Aspar车队版）亮相"],
+    paragraphs: [
+      "CFMOTO在米兰国际车展上展出V4 SR-RR超级跑车，搭载997cc V4水冷发动机，最大功率157kW（约210匹以上），整备质量低于200kg，推重比大于1，极速300+km/h，计划量产500辆以上冲击WSBK赛事。同期展出的还有1000MT-X，946.2cc并列双缸发动机，105Nm@6250rpm，83kW@8500rpm，199kg干重，450公里续航，配备Brembo辐照卡钳和倍耐力Scorpion STR轮组。",
+      "展台上还出现了GP版花675NK，即CFMOTO Aspar车队参赛车型。此外，以MotoGP为主题的电影《Idols偶像》2026年3月19日上映，讲述春风Aspar车队故事，赛事文化输出持续深化。",
+      "CFMOTO的全球化策略以本土生产+本地适配为核心，欧洲市场中国品牌占有率连续十年第一。CFMOTO DAY已落地全球20余个国家和地区，从产品出海向文化出海升级。"
+    ]
+  },
+  {
+    slug: "zxmoto-820rr-rs-500rr-full-intro",
+    title: "张雪820RR-RS技术拆解：2.81秒破百的国产三缸旗舰",
+    category: "技术工程",
+    summary:
+      "张雪820RR-RS零百加速2.81秒的背后，是819cc直列三缸100%自研的动力系统，本文拆解发动机、车架和电控三大核心。",
+    deck: "技术深读",
+    coverLabel: "ZX820RR TECH",
+    author: "周临",
+    publishedAt: "2026-04-04",
+    readMinutes: 8,
+    coverPalette: { from: "#FF6B35", to: "#FF9A62" },
+    metrics: { views: "6.1k", comments: 47 },
+    keyPoints: ["819cc直列三缸100%自研", "零百加速2.81秒", "车架和电控同样100%国产自研"],
+    paragraphs: [
+      "张雪820RR-RS的核心竞争力来自一套完全自主研发的动力系统。819cc直列三缸水冷发动机配合完善的电控系统，零百加速实测2.81秒，这一数据已经进入国际顶级运动车型行列。更重要的是，发动机、车架和电控三大核心全部实现国产自研，不依赖外部供应商。",
+      "从赛道表现来看，背靠背双冠、领先第二名近4秒的成绩证明了整车完成度而非单纯参数。WSBK赛场的高温、高负载、连续高强度驾驶环境，是最严苛的量产车验证条件。",
+      "对于国产摩托行业而言，张雪机车的意义在于证明了中国品牌不仅能够造出高参数的发动机，更能够在顶级赛事环境中验证其可靠性和综合性能。这一步的跨越比单纯的数据突破更有长期价值。"
+    ]
+  },
+  {
+    slug: "cfmoto-800mt-x-utility-review",
+    title: "CFMOTO 800MT-X综合测评：22.5升油箱拉力风，真实长途能力如何",
+    category: "装备指南",
+    summary:
+      "799cc直列双缸水冷电喷发动机，83kW最大功率，22.5升大容量油箱，3种骑行模式+定速巡航，800MT-X长途舒适性实地测评。",
+    deck: "长途ADV实测",
+    coverLabel: "800MT-X REVIEW",
+    author: "何尧",
+    publishedAt: "2026-04-02",
+    readMinutes: 7,
+    coverPalette: { from: "#00A6A6", to: "#53D6D0" },
+    metrics: { views: "4.3k", comments: 38 },
+    keyPoints: ["22.5升油箱续航覆盖450公里", "3种骑行模式+定速巡航", "799cc双缸低转扭矩充沛"],
+    paragraphs: [
+      "800MT-X是CFMOTO拉力系列的的重要补全车型，799cc直列双缸水冷电喷发动机输出83kW最大功率，22.5升大容量油箱提供450公里级别续航，3种骑行模式加定速巡航覆盖了长途旅行的核心需求。",
+      "从实际骑行反馈来看，双缸发动机的低转扭矩特性对载重和烂路环境更为友好，相比同级别四缸机型在非铺装路面上的可控性更优。拉力风格的车架和长行程减震设定，让这台车在复杂路况下的信心建立比纯公路ADV更为扎实。",
+      "800MT-X的亮相也出现在第138届广交会上，与U6 EV四轮全地形车、ZEEHO AE7电动摩托等组成CFMOTO全动力产品矩阵。"
+    ]
+  },
+  {
+    slug: "cfmoto-750sr-s-street-track-dual-purpose",
+    title: "2026 CFMOTO 750SR-S街跑实测：111匹马力双用途定位是否成立",
+    category: "装备指南",
+    summary:
+      "749cc水冷直列四缸，111.52ps最大马力，8.16kg-m扭力，街道与赛道双用途定位，750SR-S综合测评。",
+    deck: "双用途街跑",
+    coverLabel: "750SR-S REVIEW",
+    author: "韩维",
+    publishedAt: "2026-04-01",
+    readMinutes: 6,
+    coverPalette: { from: "#7C5CFC", to: "#A793FF" },
+    metrics: { views: "3.8k", comments: 29 },
+    keyPoints: ["749cc四缸111.52ps街道可用性高", "6前速滑动离合+单向电子快排", "MAXXIS SP轮胎兼顾街道和赛道"],
+    paragraphs: [
+      "750SR-S搭载749cc水冷直列四缸DOHC 16气门发动机，最大功率111.52ps/10,250rpm，最大扭力8.16kg-m/9,000rpm，匹配6前速滑动离合器和单向电子快排，定位街道与赛道双用途。",
+      "从动力特性来看，四缸发动机的高转延伸提供了激情驾驶的基础，而滑动离合器的加入让换挡操作更顺滑，日常通勤和周末跑山的容错率都更高。MAXXIS SP轮胎在街道和轻赛道环境中表现均衡，兼顾了使用寿命和抓地表现。",
+      "这台车的核心价值在于用一台车覆盖了多数用户的真实使用场景——工作日通勤代步，周末山道或赛道体验，不需要在两台车之间做取舍。"
+    ]
+  },
+  {
+    slug: "mcn-2026-new-bikes-comprehensive-overview",
+    title: "MCN 2026新车综合：杜卡迪复古、Zero电动踏板、凯旋限量同步登场",
+    category: "新车发布",
+    summary:
+      "MotorCycle News梳理2026年新车阵容，杜卡迪DesertX Gen2和Formula 73复古限量、Zero LS1电动踏板、凯旋Speed Twin 1200限量版等悉数在列。",
+    deck: "2026新车总览",
+    coverLabel: "2026 NEW BIKES",
+    author: "宋越",
+    publishedAt: "2026-03-31",
+    readMinutes: 5,
+    coverPalette: { from: "#F43F5E", to: "#FF8A9F" },
+    metrics: { views: "4.1k", comments: 35 },
+    keyPoints: ["Ducati DesertX Gen2 890cc V2双缸", "Ducati Formula 73 Scrambler限量100周年", "Zero LS1电动踏板英国起售4.5万元"],
+    paragraphs: [
+      "MCN梳理的2026新车阵容涵盖了从公升级探险到电动通勤的完整价格区间。杜卡迪DesertX Gen2搭载890cc V2双缸发动机，售价14,995英镑起，复古风格的Formula 73 Scrambler限量版售价15,095英镑，庆祝品牌100周年。",
+      "电动阵营中，Zero Motorcycles LS1电动踏板车进入欧洲市场，售价从4,500英镑起，成为目前市场上最具性价比的电动摩托入门选项之一。凯旋Speed Twin 1200 Café Racer Edition限量800台，15,995英镑。",
+      "值得注意的是，2026年新车趋势明显向双用途和电动化两个方向分化，单纯的性能旗舰数量在减少，品牌更注重在特定场景下的体验完成度。"
+    ]
+  },
+  {
+    slug: "mcn-2026-adv-bikes-recommendation",
+    title: "MCN 2026 ADV探险摩托推荐：从中量级到旗舰，全路况选择指南",
+    category: "装备指南",
+    summary:
+      "MCN发布2026年ADV推荐榜单，从BMW F900GS到R1250GS Adventure，从Honda Africa Twin到Ducati Multistrada，中量级到公升级全覆盖。",
+    deck: "ADV购买指南",
+    coverLabel: "BEST ADV 2026",
+    author: "谢衡",
+    publishedAt: "2026-03-29",
+    readMinutes: 6,
+    coverPalette: { from: "#0EABAB", to: "#7CE7E1" },
+    metrics: { views: "5.2k", comments: 44 },
+    keyPoints: ["BMW F900GS适合中量级入门ADV", "Honda Africa Twin公路越野双用途均衡", "Ducati Multistrada 950 S运动ADV首选"],
+    paragraphs: [
+      "MCN的2026 ADV推荐覆盖了从入门到旗舰的完整产品线。BMW F900GS Adventure以中量级车身提供长途舒适性和轻度越野能力，是目前市场上最均衡的中量级ADV选项之一。旗舰方面，R1250GS Adventure凭借水平对置双缸的独特骑行三角和丰富电控，依然是长途穿越的首选。",
+      "Honda Africa Twin Adventure Sports在公路和越野之间取得了最佳平衡点，适合不需要最强动力但要求全面性的用户。Ducati Multistrada 950 S则以运动基因为卖点，在弯道中的灵活性和快速换装能力是其区别于对手的核心优势。",
+      "2026年的ADV市场另一个显著变化是电子悬挂和驾驶辅助系统的下放速度加快，中量级车型的配置水平已经接近三年前的旗舰规格，这让选购逻辑变得更复杂——不再是单纯比较排量大小。"
+    ]
+  },
+  {
+    slug: "advrider-tat-2026-ride-report-preview",
+    title: "ADVrider TAT 2026横穿美国计划启动：7月出发21天穿越路线前瞻",
+    category: "行业快讯",
+    summary:
+      "ADVrider论坛发起2026年横穿美国TAT路线计划，7月13日出发，预计21天完成从东向西的完整穿越，多辆不同品牌ADV参与。",
+    deck: "环球摩旅",
+    coverLabel: "TAT 2026",
+    author: "方屿",
+    publishedAt: "2026-04-03",
+    readMinutes: 5,
+    coverPalette: { from: "#7F63FF", to: "#C2B5FF" },
+    metrics: { views: "2.8k", comments: 22 },
+    keyPoints: ["TAT路线从东向西横穿美国", "7月13日出发预计21天完成", "论坛多车种、多品牌ADV参与"],
+    paragraphs: [
+      "ADVrider论坛每年一度的横穿美国TAT（Trans America Trail）计划2026年再次启动，本次车队计划7月13日出发，预计21天完成从东向西的完整路线穿越。TAT路线以非铺装路面为主，途经美国多个州的山地、沙漠和森林地形，对车辆续航、减震和装载系统都有较高要求。",
+      "相比Ducati DesertX Gen2等新型ADV的发布，TAT这类真实穿越故事在ADVrider社区更受欢迎。论坛的精华Ride Reports栏目一直是全球摩旅爱好者关注的核心内容，涵盖从突尼斯沙漠到缅甸高原的各种极端路况骑行经验。",
+      "对于长途探险摩旅爱好者而言，ADVrider的精华帖比任何官方评测都有更高的参考价值，因为这些内容来自真实长时间、多路况的连续使用反馈。"
+    ]
+  },
+  {
+    slug: "advrider-turkey-tet-epic-ride",
+    title: "土耳其TET意外冒险：三人三车两周4000公里野营穿越",
+    category: "行业快讯",
+    summary:
+      "ADVrider论坛一篇土耳其TET路线野营穿越帖引发关注，三人三车两周时间纯骑行乐趣，4000+公里穿越土耳其全境。",
+    deck: "精华摩旅",
+    coverLabel: "TET TURKEY",
+    author: "方屿",
+    publishedAt: "2026-04-02",
+    readMinutes: 4,
+    coverPalette: { from: "#F2506A", to: "#FFB1BE" },
+    metrics: { views: "2.4k", comments: 18 },
+    keyPoints: ["土耳其TET路线三人三车野营穿越", "两周4000+公里", "意外冒险故事性极强"],
+    paragraphs: [
+      "ADVrider论坛一篇题为《TET Turkey: The Adventure We Didnt Plan》的帖子记录了一场三人三车、两周时间、穿越土耳其全境的真实野营摩旅经历。帖子以意外冒险为主题，骑行过程中遭遇了计划外的路况挑战，但正是这些非预期元素让故事更具参考价值。",
+      "土耳其TET路线的特点在于兼顾了沿海公路的舒适性和内陆高原的越野挑战，加上相对友好的物价和极高的当地人对摩托车的友好度，是全球摩旅爱好者公认的性价比极高的长途目的地。",
+      "ADVrider社区的Ride Reports栏目之所以质量极高，核心在于这些内容来自普通车友的真实记录，没有任何商业目的，器材、路线和后勤安排都代表了真实使用场景。"
+    ]
+  },
+  {
+    slug: "mcn-2026-superbike-ranking",
+    title: "MCN 2026超级摩托排行榜：200匹成入门门槛，公升级竞争格局解读",
+    category: "装备指南",
+    summary:
+      "MCN年度超级摩托排行榜显示，200hp已成为公升级超级摩托的入门门槛，Yamaha R1英国停产仅保留赛道版，Ducati Panigale V4 R持续进化。",
+    deck: "超级摩托榜单",
+    coverLabel: "SUPERBIKE RANKING",
+    author: "李潇",
+    publishedAt: "2026-03-28",
+    readMinutes: 6,
+    coverPalette: { from: "#F43F5E", to: "#FF6B6B" },
+    metrics: { views: "5.6k", comments: 51 },
+    keyPoints: ["200hp成为公升级超跑入门门槛", "Yamaha R1英国停产仅保留赛道版", "KTM 990 RCR街道赛道两用定位清晰"],
+    paragraphs: [
+      "MCN 2026超级摩托排行榜揭示了一个明确趋势：200匹马力已经从性能目标变成了公升级超级摩托的入门门槛。各品牌在这一区间的产品力已经高度同质化，差异化主要来自电子系统、骑行三角和售后服务体系。",
+      "值得注意的是Yamaha R1在英国市场已停止量产，仅保留赛道版本。这标志着传统顶级的公升级超级摩托正在从大众消费品向小众赛道专用方向收缩，公路骑士的主流选择已经下移到200匹级别的中量级超级摩托。",
+      "Ducati Panigale V4 R依然是榜单中最极致的存在，2026款持续针对空气动力学和高转延伸进行优化。KTM 990 RCR则代表了一种更务实的方向——街道和赛道的两用平衡，吸引了不需要极致参数但要求综合完成度的用户。"
+    ]
   }
 ];
 

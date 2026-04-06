@@ -92,13 +92,19 @@ export async function getPublishedArticles(
   };
 }
 
-// Fetch featured article
+// Fetch featured article(s) for banner
 export async function getFeaturedArticle(): Promise<PublicArticle | null> {
-  const url = `${BASE_URL}/rest/v1/articles?select=*&status=eq.published&featured=eq.true&order=published_at.desc&limit=1`;
+  const articles = await getFeaturedArticles();
+  return articles.length > 0 ? articles[0] : null;
+}
+
+// Fetch all featured articles (for banner carousel)
+export async function getFeaturedArticles(): Promise<PublicArticle[]> {
+  const url = `${BASE_URL}/rest/v1/articles?select=*&status=eq.published&featured=eq.true&order=published_at.desc&limit=5`;
   const res = await fetch(url, { headers });
-  if (!res.ok) return null;
+  if (!res.ok) return [];
   const data = await res.json();
-  return data.length > 0 ? normalizeArticle(data[0]) : null;
+  return data.map(normalizeArticle);
 }
 
 // Fetch trending (by views count - stored as text, so we'll just use recent as proxy for now)
@@ -151,4 +157,22 @@ export function formatArticleDate(dateStr: string): string {
   if (!dateStr) return '';
   const d = new Date(dateStr);
   return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+}
+
+// Get total published article count
+export async function getArticleCount(): Promise<number> {
+  const url = `${BASE_URL}/rest/v1/articles?select=id&status=eq.published`;
+  const res = await fetch(url, { headers });
+  if (!res.ok) return 0;
+  const data = await res.json();
+  return Array.isArray(data) ? data.length : 0;
+}
+
+// Get total business count
+export async function getBusinessCount(): Promise<number> {
+  const url = `${BASE_URL}/rest/v1/businesses?select=id`;
+  const res = await fetch(url, { headers });
+  if (!res.ok) return 0;
+  const data = await res.json();
+  return Array.isArray(data) ? data.length : 0;
 }
