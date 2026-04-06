@@ -9,7 +9,7 @@ export async function GET(
 
   const { data: model, error } = await supabaseAdmin
     .from('bike_model_master')
-    .select(`*, brand:brand_master(id, name, slug, country, logo_url)`)
+    .select('*')
     .eq('id', id)
     .single();
 

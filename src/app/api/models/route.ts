@@ -10,14 +10,12 @@ export async function GET(req: NextRequest) {
 
   let query = supabaseAdmin
     .from('bike_model_master')
-    .select(`*, brand:brand_master(id, name, slug, country)`, { count: 'exact' })
-    .eq('is_active', true)
-    .order('is_hot', { ascending: false })
-    .order('is_new', { ascending: false })
+    .select('*', { count: 'exact' })
+    .order('is_new_model', { ascending: false })
     .order('created_at', { ascending: false });
 
-  if (brand) query = query.eq('brand.slug', brand);
-  if (category) query = query.eq('category', category);
+  if (brand) query = query.eq('brand', brand);
+  if (category) query = query.eq('bike_type', category);
 
   const { data, error, count } = await query.range((page - 1) * limit, page * limit - 1);
 
