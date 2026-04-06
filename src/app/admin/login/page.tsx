@@ -40,7 +40,7 @@ export default function AdminLogin() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-2.5 rounded-xl border border-line bg-white text-heading text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
-                placeholder={ADMIN_EMAIL}
+                placeholder="输入邮箱"
                 required
               />
             </div>
