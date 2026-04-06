@@ -113,7 +113,7 @@ export default async function ModelsPage({
                   {model.main_image ? (
                     <Image
                       src={model.main_image}
-                      alt={model.name}
+                      alt={model.model_name}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 768px) 50vw, 25vw"
@@ -131,7 +131,7 @@ export default async function ModelsPage({
                         热门
                       </span>
                     )}
-                    {model.is_new && (
+                    {model.is_new_model && (
                       <span className="rounded-full bg-[#34C759] px-2 py-0.5 text-[10px] font-bold text-white">
                         新车
                       </span>
@@ -141,19 +141,19 @@ export default async function ModelsPage({
 
                 {/* Info */}
                 <div className="p-4">
-                  <p className="text-[11px] text-[#FF6B35] font-medium">{model.brand?.name}</p>
+                  <p className="text-[11px] text-[#FF6B35] font-medium">{model.brand}</p>
                   <h3 className="mt-1 text-base font-semibold text-[#1A1A2E] group-hover:text-[#FF6B35] transition-colors">
-                    {model.name}
+                    {model.model_name}
                   </h3>
                   <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] text-[#9CA3AF]">
-                    {model.category && (
-                      <span className="rounded-full bg-[#F0F0F0] px-2 py-0.5">{model.category}</span>
+                    {model.bike_type && (
+                      <span className="rounded-full bg-[#F0F0F0] px-2 py-0.5">{model.bike_type}</span>
                     )}
-                    {model.displacement && (
-                      <span className="rounded-full bg-[#F0F0F0] px-2 py-0.5">{model.displacement}cc</span>
+                    {model.engine_cc && (
+                      <span className="rounded-full bg-[#F0F0F0] px-2 py-0.5">{model.engine_cc}cc</span>
                     )}
-                    {model.power && (
-                      <span className="rounded-full bg-[#F0F0F0] px-2 py-0.5">{model.power}</span>
+                    {model.power_hp && (
+                      <span className="rounded-full bg-[#F0F0F0] px-2 py-0.5">{model.power_hp}hp</span>
                     )}
                   </div>
                 </div>

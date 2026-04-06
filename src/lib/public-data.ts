@@ -188,33 +188,38 @@ export interface PublicBrand {
 
 export interface PublicModel {
   id: string;
-  brand_id?: string;
-  name: string;
-  slug: string;
-  category?: string;
-  displacement?: number;
-  power?: string;
-  torque?: string;
-  weight?: string;
-  seat_height?: number;
-  fuel_capacity?: number;
-  top_speed?: number;
-  price?: string;
-  launch_date?: string;
-  main_image?: string;
-  highlights?: string[];
+  brand: string;
+  series?: string;
+  model_name: string;
+  slug?: string;
+  year?: number;
+  bike_type?: string;
+  engine_cc?: number;
+  power_hp?: number;
+  torque_nm?: number;
+  seat_height_mm?: number;
+  weight_kg?: number;
+  fuel_capacity_l?: number;
+  msrp?: number;
+  is_new_model?: boolean;
   is_hot?: boolean;
-  is_new?: boolean;
-  brand?: PublicBrand;
+  main_image?: string;
+  brand_name?: string;
+  brand_slug?: string;
 }
 
-// Fetch all active brands
+// Fetch all brands
 export async function getPublicBrands(): Promise<PublicBrand[]> {
-  const url = `${BASE_URL}/rest/v1/brand_master?select=id,name,slug,country&is_active=eq.true&order=name.asc`;
+  const url = `${BASE_URL}/rest/v1/brand_master?select=id,brand_name,slug,country&order=brand_name.asc`;
   const res = await fetch(url, { headers });
   if (!res.ok) return [];
   const data = await res.json();
-  return data;
+  return data.map((b: any) => ({
+    id: b.id,
+    name: b.brand_name,
+    slug: b.slug || '',
+    country: b.country,
+  }));
 }
 
 // Fetch models with pagination and filters
@@ -225,9 +230,9 @@ export async function getPublicModels(
   limit = 20
 ): Promise<{ models: PublicModel[]; total: number }> {
   const offset = (page - 1) * limit;
-  let url = `${BASE_URL}/rest/v1/bike_model_master?select=*&is_active=eq.true&order=is_hot.desc,is_new.desc&limit=${limit}&offset=${offset}`;
+  let url = `${BASE_URL}/rest/v1/bike_model_master?select=*&order=is_new_model.desc,created_at.desc&limit=${limit}&offset=${offset}`;
 
-  const countUrl = `${BASE_URL}/rest/v1/bike_model_master?select=id&is_active=eq.true`;
+  const countUrl = `${BASE_URL}/rest/v1/bike_model_master?select=id`;
 
   const res = await fetch(url, { headers });
   const countRes = await fetch(countUrl, { headers });
@@ -242,7 +247,7 @@ export async function getPublicModels(
 
 // Fetch single model by id
 export async function getModelById(id: string): Promise<PublicModel | null> {
-  const url = `${BASE_URL}/rest/v1/bike_model_master?select=*,brand:brand_master(id,name,slug,country)&id=eq.${encodeURIComponent(id)}&is_active=eq.true`;
+  const url = `${BASE_URL}/rest/v1/bike_model_master?select=*&id=eq.${encodeURIComponent(id)}`;
   const res = await fetch(url, { headers });
   if (!res.ok) return null;
   const data = await res.json();

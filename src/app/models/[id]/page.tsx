@@ -29,13 +29,9 @@ export default async function ModelDetailPage({
         <div className="mb-6 flex items-center gap-2 text-sm text-[#9CA3AF]">
           <Link href="/models" className="hover:text-[#FF6B35] transition-colors">车型库</Link>
           <span>›</span>
-          {model.brand && (
-            <>
-              <span>{model.brand.name}</span>
-              <span>›</span>
-            </>
-          )}
-          <span className="text-[#1A1A2E]">{model.name}</span>
+          <span>{model.brand}</span>
+          <span>›</span>
+          <span className="text-[#1A1A2E]">{model.model_name}</span>
         </div>
 
         {/* Hero section */}
@@ -47,7 +43,7 @@ export default async function ModelDetailPage({
               {model.main_image ? (
                 <Image
                   src={model.main_image}
-                  alt={model.name}
+                  alt={model.model_name}
                   fill
                   className="object-cover"
                   sizes="(max-width: 1024px) 100vw, 60vw"
@@ -64,7 +60,7 @@ export default async function ModelDetailPage({
                 {model.is_hot && (
                   <span className="rounded-full bg-[#FF6B35] px-3 py-1 text-xs font-bold text-white">热门车型</span>
                 )}
-                {model.is_new && (
+                {model.is_new_model && (
                   <span className="rounded-full bg-[#34C759] px-3 py-1 text-xs font-bold text-white">全新上市</span>
                 )}
               </div>
@@ -74,20 +70,18 @@ export default async function ModelDetailPage({
             <div className="p-7">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  {model.brand && (
-                    <p className="text-sm text-[#FF6B35] font-medium">{model.brand.name}</p>
-                  )}
-                  <h1 className="mt-1 text-3xl font-bold text-[#1A1A2E]">{model.name}</h1>
-                  {model.category && (
+                  <p className="text-sm text-[#FF6B35] font-medium">{model.brand}</p>
+                  <h1 className="mt-1 text-3xl font-bold text-[#1A1A2E]">{model.model_name}</h1>
+                  {model.bike_type && (
                     <span className="mt-2 inline-block rounded-full bg-[#F0F0F0] px-3 py-1 text-sm text-[#6B7280]">
-                      {model.category}
+                      {model.bike_type}
                     </span>
                   )}
                 </div>
-                {model.price && (
+                {model.msrp && (
                   <div className="text-right">
                     <p className="text-[11px] text-[#9CA3AF]">官方售价</p>
-                    <p className="mt-1 text-xl font-bold text-[#FF6B35]">{model.price}</p>
+                    <p className="mt-1 text-xl font-bold text-[#FF6B35]">¥{model.msrp}万</p>
                   </div>
                 )}
               </div>
@@ -95,12 +89,12 @@ export default async function ModelDetailPage({
               {/* Specs grid */}
               <div className="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-3">
                 {[
-                  { label: '排量', value: model.displacement ? `${model.displacement}cc` : '-' },
-                  { label: '功率', value: model.power || '-' },
-                  { label: '扭矩', value: model.torque || '-' },
-                  { label: '整备质量', value: model.weight ? `${model.weight}kg` : '-' },
-                  { label: '座高', value: model.seat_height ? `${model.seat_height}mm` : '-' },
-                  { label: '最高时速', value: model.top_speed ? `${model.top_speed}km/h` : '-' },
+                  { label: '排量', value: model.engine_cc ? `${model.engine_cc}cc` : '-' },
+                  { label: '功率', value: model.power_hp ? `${model.power_hp}hp` : '-' },
+                  { label: '扭矩', value: model.torque_nm ? `${model.torque_nm}Nm` : '-' },
+                  { label: '整备质量', value: model.weight_kg ? `${model.weight_kg}kg` : '-' },
+                  { label: '座高', value: model.seat_height_mm ? `${model.seat_height_mm}mm` : '-' },
+                  { label: '油箱', value: model.fuel_capacity_l ? `${model.fuel_capacity_l}L` : '-' },
                 ].map((spec) => (
                   <div key={spec.label} className="rounded-xl bg-[#F5F6FA] p-4">
                     <p className="text-[11px] text-[#9CA3AF]">{spec.label}</p>
@@ -109,48 +103,39 @@ export default async function ModelDetailPage({
                 ))}
               </div>
 
-              {/* Highlights */}
-              {model.highlights && model.highlights.length > 0 && (
-                <div className="mt-7">
-                  <h3 className="text-sm font-semibold text-[#1A1A2E] mb-3">车型亮点</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {model.highlights.map((tag: string) => (
-                      <span
-                        key={tag}
-                        className="rounded-full bg-[#FF6B35]/10 px-3 py-1 text-sm text-[#FF6B35]"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
+              {/* New/Hot badges */}
+              <div className="mt-7 flex gap-2">
+                {model.is_hot && (
+                  <span className="rounded-full bg-[#FF6B35] px-3 py-1 text-sm font-semibold text-white">热门车型</span>
+                )}
+                {model.is_new_model && (
+                  <span className="rounded-full bg-[#34C759] px-3 py-1 text-sm font-semibold text-white">全新上市</span>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Right: related articles + brand */}
           <aside className="space-y-5">
             {/* Brand card */}
-            {model.brand && (
-              <div className="card rounded-2xl p-5">
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-[#9CA3AF]">所属品牌</p>
-                <div className="mt-3 flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-xl bg-[#F5F6FA] flex items-center justify-center text-2xl">
-                    🏭
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-[#1A1A2E]">{model.brand.name}</h3>
-                    <p className="text-sm text-[#9CA3AF]">{model.brand.country}</p>
-                  </div>
+            <div className="card rounded-2xl p-5">
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-[#9CA3AF]">所属品牌</p>
+              <div className="mt-3 flex items-center gap-3">
+                <div className="h-12 w-12 rounded-xl bg-[#F5F6FA] flex items-center justify-center text-2xl">
+                  🏭
                 </div>
-                <Link
-                  href={`/models?brand=${model.brand.slug}`}
-                  className="mt-4 block w-full rounded-full border border-[#E4E6EF] px-4 py-2 text-center text-sm font-medium text-[#6B7280] hover:border-[#FF6B35] hover:text-[#FF6B35] transition text-center"
-                >
-                  查看该品牌全部车型 →
-                </Link>
+                <div>
+                  <h3 className="font-semibold text-[#1A1A2E]">{model.brand}</h3>
+                  {model.series && <p className="text-sm text-[#9CA3AF]">{model.series}</p>}
+                </div>
               </div>
-            )}
+              <Link
+                href={`/models?brand=${model.slug || ''}`}
+                className="mt-4 block w-full rounded-full border border-[#E4E6EF] px-4 py-2 text-center text-sm font-medium text-[#6B7280] hover:border-[#FF6B35] hover:text-[#FF6B35] transition"
+              >
+                查看该品牌全部车型 →
+              </Link>
+            </div>
 
             {/* Related articles */}
             <div className="card rounded-2xl p-5">
